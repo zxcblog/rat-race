@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package base.v1;
 
-option go_package = "github.com/zxcblog/rat-race/pb/base;base";
+option go_package = "github.com/zxcblog/rat-race/internal/router/pb/base;base";
 
 message Auth {
   string token = 1; // 认证token

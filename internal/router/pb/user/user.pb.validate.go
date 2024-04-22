@@ -317,7 +317,7 @@ func (m *LoginReq) validate(all bool) error {
 
 	// no validation rules for Password
 
-	// no validation rules for Capthca
+	// no validation rules for Captcha
 
 	if len(errors) > 0 {
 		return LoginReqMultiError(errors)

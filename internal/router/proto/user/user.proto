@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package user.v1;
 
-option go_package = "zxcblog/rat-race/pb/user;user";
+option go_package = "github.com/zxcblog/rat-race/internal/router/pb/user;user";
 
 import "google/api/annotations.proto";
 import "validate/validate.proto";
@@ -53,7 +53,7 @@ message LoginReq {
   LoginType type  = 1; // 登录类型
   string account  = 2[(validate.rules).string = {min_len: 1}]; // 账号
   string password = 3; // 认证密码
-  string capthca  = 4; // 验证码
+  string captcha  = 4; // 验证码
 }
 
 message UserAuthRes {
