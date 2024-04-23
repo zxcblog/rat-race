@@ -1,0 +1,12 @@
+Service:
+  Host: 0.0.0.0
+  RunMode: dev
+
+Grpc:
+  Port: 8082
+
+Gateway:
+  Port: 8080
+
+
+
