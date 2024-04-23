@@ -24,3 +24,19 @@ func TestLogin(t *testing.T) {
 	}
 	t.Log(resp)
 }
+
+func TestRegister(t *testing.T) {
+	ctx := context.Background()
+	clientConn, _ := grpc.DialContext(ctx, "localhost:8082", grpc.WithInsecure())
+	defer clientConn.Close()
+
+	userClient := user.NewUserClient(clientConn)
+	resp, err := userClient.Register(ctx, &user.RegisterReq{
+		Account:  "admin",
+		Password: "adminadmin",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(resp)
+}

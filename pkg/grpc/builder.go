@@ -3,6 +3,7 @@ package grpc
 import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+	"log"
 	"net"
 )
 
@@ -45,15 +46,22 @@ func (build *GRPCBuild) RegisterServer(opts ...func(s *grpc.Server)) *GRPCBuild 
 }
 
 // Start 服务启动
-func (build *GRPCBuild) Start() error {
+func (build *GRPCBuild) Start() {
 	// 启动grpc服务
 	lis, err := net.Listen("tcp", build.config.Address)
 	if err != nil {
-		return err
+		panic("端口监听失败")
+
 	}
 
-	if err := build.grpcS.Serve(lis); err != nil {
-		return err
-	}
-	return nil
+	go func() {
+		if err := build.grpcS.Serve(lis); err != nil {
+			// 打印日志
+			log.Fatalf("服务启动失败", err.Error())
+		}
+	}()
+}
+
+func (build *GRPCBuild) ShutDown() {
+	build.grpcS.GracefulStop()
 }
