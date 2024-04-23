@@ -18,6 +18,17 @@ func (u *UserServer) Register(ctx context.Context, req *user.RegisterReq) (*user
 }
 
 func (u *UserServer) Login(ctx context.Context, req *user.LoginReq) (*user.UserAuthRes, error) {
+	if err := req.Validate(); err != nil {
+		return nil, err
+	}
+
 	//TODO implement me
-	panic("Login implement me")
+	return &user.UserAuthRes{
+		Userinfo: &user.UserInfo{
+			Account:  req.Account,
+			Nickname: "",
+			Mobile:   "",
+		},
+		TokenInfo: nil,
+	}, nil
 }

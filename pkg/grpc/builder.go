@@ -18,9 +18,16 @@ type GRPCBuild struct {
 func NewGRPCBuild(config *Config) *GRPCBuild {
 	builder := &GRPCBuild{config: config}
 
+	opts := make([]grpc.ServerOption, 0)
+
+	// 设置发送和请求接收数据大小
+	if config.TransDataSize > 0 {
+		opts = append(opts, grpc.MaxSendMsgSize(int(config.TransDataSize)), grpc.MaxRecvMsgSize(int(config.TransDataSize)))
+	}
+
 	// 初始化grpc服务
 	// TODO 用户自定义注册拦截器
-	builder.grpcS = grpc.NewServer()
+	builder.grpcS = grpc.NewServer(opts...)
 
 	// dev环境添加反射
 	if builder.config.RunMode == DevMod {

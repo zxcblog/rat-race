@@ -7,6 +7,7 @@ const (
 
 // Config 启动配置信息
 type Config struct {
-	Address string
-	RunMode string
+	Address       string
+	RunMode       string
+	TransDataSize int64
 }
