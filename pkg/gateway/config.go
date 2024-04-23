@@ -1,4 +1,6 @@
-package grpc
+package gateway
+
+import "time"
 
 const (
 	DevMod     = "dev"     // dev
@@ -9,5 +11,7 @@ const (
 type Config struct {
 	Address       string
 	RunMode       string
-	TransDataSize int
+	GrpcAddress   string
+	GrpcTransData int
+	ShutDownTime  time.Duration
 }

@@ -12,7 +12,8 @@ type GRPCBuild struct {
 	grpcS  *grpc.Server
 	config *Config
 
-	errs []error
+	listen net.Listener
+	errs   []error
 }
 
 // NewGRPCBuild 初始化grpc服务
@@ -35,6 +36,15 @@ func NewGRPCBuild(config *Config) *GRPCBuild {
 		reflection.Register(builder.grpcS)
 	}
 
+	// 启动grpc服务
+	lis, err := net.Listen("tcp", config.Address)
+	if err != nil {
+		panic("端口监听失败")
+
+	}
+
+	builder.listen = lis
+
 	return builder
 }
 
@@ -47,15 +57,8 @@ func (build *GRPCBuild) RegisterServer(opts ...func(s *grpc.Server)) *GRPCBuild 
 
 // Start 服务启动
 func (build *GRPCBuild) Start() {
-	// 启动grpc服务
-	lis, err := net.Listen("tcp", build.config.Address)
-	if err != nil {
-		panic("端口监听失败")
-
-	}
-
 	go func() {
-		if err := build.grpcS.Serve(lis); err != nil {
+		if err := build.grpcS.Serve(build.listen); err != nil {
 			// 打印日志
 			log.Fatalf("服务启动失败", err.Error())
 		}
