@@ -1,5 +1,20 @@
 version: "3.9"
 services:
+  rat-race:
+    container_name: rat-race
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    restart: always
+    ports:
+      - "${RAT_RACE_PORT}:9000"
+    depends_on:
+      - mongodb-primary
+      - mariadb
+      - redis
+    networks:
+      - rat-race
+
   mongodb-primary:
     image: ${MONGODB_IMG}
     container_name: rat-race-mongodb
@@ -20,7 +35,7 @@ services:
   mariadb:
     image: ${MARIADB_IMG}
     container_name: rat-race-mariadb
-#    restart: always
+    restart: always
     ports:
       - "${MARIADB_PORT}:3306"
     volumes:
