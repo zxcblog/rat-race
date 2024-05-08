@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/zxcblog/rat-race/internal/repository/mariadb"
 	"github.com/zxcblog/rat-race/pkg/gateway"
 	"github.com/zxcblog/rat-race/pkg/grpc"
 	"github.com/zxcblog/rat-race/pkg/tools"
@@ -11,6 +12,7 @@ var (
 	Server   *server
 	GrpcConf *grpc.Config
 	GwConf   *gateway.Config
+	DBConf   *mariadb.DBConf
 )
 
 type server struct {
@@ -30,9 +32,14 @@ func setConfig(conf *Config) error {
 	if err := setGwConf(conf); err != nil {
 		return err
 	}
+
+	if err := setDBConf(conf); err != nil {
+		return err
+	}
 	return nil
 }
 
+// 设置服务启动的基本配置
 func setServer(conf *Config) error {
 	if Server == nil {
 		Server = &server{}
@@ -41,6 +48,7 @@ func setServer(conf *Config) error {
 	return nil
 }
 
+// 设置grpc的基本配置
 func setGrpcConf(conf *Config) error {
 	c := make(map[string]string)
 	err := conf.ReadConfig("Grpc", &c)
@@ -66,6 +74,7 @@ func setGrpcConf(conf *Config) error {
 	return nil
 }
 
+// 设置gateway基本配置
 func setGwConf(conf *Config) error {
 	c := make(map[string]string)
 	err := conf.ReadConfig("Gateway", &c)
@@ -83,4 +92,8 @@ func setGwConf(conf *Config) error {
 	GwConf.GrpcAddress = GrpcConf.Address
 	GwConf.GrpcTransData = GrpcConf.TransDataSize
 	return nil
+}
+
+func setDBConf(conf *Config) error {
+	return conf.ReadConfig("Mariadb", &DBConf)
 }

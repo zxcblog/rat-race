@@ -10,5 +10,11 @@ Grpc:
 Gateway:
   Port: 8080
 
+Mariadb:
+  Host: 127.0.0.1
+  Port: 3306
+  User: root
+  Pass: 123456
+  DbName: rat-race
 
 
