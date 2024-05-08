@@ -1,0 +1,57 @@
+version: "3.9"
+services:
+  mongodb-primary:
+    image: ${MONGODB_IMG}
+    container_name: rat-race-mongodb
+    restart: always
+    volumes:
+      - "${MONGODB_CONF}:/usr/local/etc"
+      - "${MONGODB_DATA_PRIMARY}:/data/db"
+      - "${MONGODB_LOG_PRIMARY}:/var/log/mongodb"
+    ports:
+      - "${MONGODB_PRIMARY_PORT}:27017"
+    networks:
+      - rat-race
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+      TZ: ${TZ}
+
+  mariadb:
+    image: ${MARIADB_IMG}
+    container_name: rat-race-mariadb
+#    restart: always
+    ports:
+      - "${MARIADB_PORT}:3306"
+    volumes:
+      - "${MARIADB_CONF}:/etc/mysql/conf.d/mysql.cnf"
+      - "${MARIADB_DATA}:/var/lib/mysql"
+    networks:
+      - rat-race
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      TZ: ${TZ}
+
+  redis:
+    image: ${REDIS_IMG}
+    container_name: rat-race-redis
+    restart: always
+    ports:
+      - "${REDIS_PORT}:6379"
+    volumes:
+      - "${REDIS_CONF}:/etc/redis.conf"
+      - "${REDIS_DATA}:/data"
+    entrypoint: ["redis-server", "/etc/redis.conf"]
+    networks:
+      - rat-race
+    environment:
+      TZ: ${TZ}
+
+networks:
+  rat-race:
+    driver: bridge
+    name: rat-race
+    ipam:
+      config:
+        - subnet: 172.26.0.0/16
+          gateway: 172.26.0.1
