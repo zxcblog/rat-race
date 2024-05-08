@@ -1,6 +1,7 @@
 Service:
   Host: 0.0.0.0
   RunMode: dev
+  Name: rat-race
 
 Grpc:
   Port: 8082
@@ -16,5 +17,16 @@ Mariadb:
   User: root
   Pass: 123456
   DbName: rat-race
+  MaxOpenConn: 30
+  MaxIdleConn: 10
+  ConnMaxLifeTime: 60
 
-
+Logger:
+  MaxSize: 150
+  MaxAge: 30
+  MaxBackups: 300
+  Compress: true
+  LocalTime: true
+  IsConsole: true
+  FileName: ./logs/error.log
+  Level: info

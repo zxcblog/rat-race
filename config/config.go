@@ -1,9 +1,10 @@
 package config
 
 import (
-	"github.com/zxcblog/rat-race/internal/repository/mariadb"
+	"github.com/zxcblog/rat-race/internal/client"
 	"github.com/zxcblog/rat-race/pkg/gateway"
 	"github.com/zxcblog/rat-race/pkg/grpc"
+	"github.com/zxcblog/rat-race/pkg/logger"
 	"github.com/zxcblog/rat-race/pkg/tools"
 	"strings"
 )
@@ -12,12 +13,14 @@ var (
 	Server   *server
 	GrpcConf *grpc.Config
 	GwConf   *gateway.Config
-	DBConf   *mariadb.DBConf
+	DBConf   *client.DBConf
+	LogConf  *logger.Config
 )
 
 type server struct {
 	Host    string
 	RunMode string
+	Name    string
 }
 
 func setConfig(conf *Config) error {
@@ -34,6 +37,10 @@ func setConfig(conf *Config) error {
 	}
 
 	if err := setDBConf(conf); err != nil {
+		return err
+	}
+
+	if err := setLogConf(conf); err != nil {
 		return err
 	}
 	return nil
@@ -96,4 +103,12 @@ func setGwConf(conf *Config) error {
 
 func setDBConf(conf *Config) error {
 	return conf.ReadConfig("Mariadb", &DBConf)
+}
+
+func setLogConf(conf *Config) error {
+	if err := conf.ReadConfig("Logger", &LogConf); err != nil {
+		return err
+	}
+	LogConf.Name = Server.Name
+	return nil
 }

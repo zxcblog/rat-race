@@ -74,3 +74,7 @@ func NewLogger(config *Config) *Logger {
 		zapLogger: zapLogger,
 	}
 }
+
+func (l Logger) Close() error {
+	return l.zapLogger.Sync()
+}
