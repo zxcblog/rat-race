@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-type DBConf struct {
+type DBConfig struct {
 	Host            string
 	Port            string
 	User            string
@@ -22,10 +22,11 @@ type DBConf struct {
 
 type MariaDB struct {
 	DB   *gorm.DB
-	Conf *DBConf
+	Conf *DBConfig
 }
 
-func Conn(conf *DBConf) (*MariaDB, error) {
+// MariadbInit 数据库初始化
+func MariadbInit(conf *DBConfig) (*MariaDB, error) {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=%t&loc=%s",
 		conf.User,
 		conf.Pass,

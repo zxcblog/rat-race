@@ -7,8 +7,6 @@ import (
 	"github.com/zxcblog/rat-race/pkg/tools"
 )
 
-var conf *Config
-
 type Config struct {
 	vp       *viper.Viper
 	fileName string
@@ -34,14 +32,14 @@ func NewConfig(fileName string, isWatch bool, run func(in fsnotify.Event)) (*Con
 }
 
 // InitConfig 初始化配置文件信息
-func InitConfig(fileName string) error {
+func InitConfig(fileName string) (*Config, error) {
 	path, err := tools.GetPath(fileName)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if !tools.IsExists(path) {
-		return errors.New("配置文件不存在")
+		return nil, errors.New("配置文件不存在")
 	}
 
 	//// TODO 监听热加载配置信息
@@ -49,10 +47,7 @@ func InitConfig(fileName string) error {
 	//	nvp, err := NewConfig()
 	//})
 
-	if conf, err = NewConfig(fileName, false, nil); err != nil {
-		return nil
-	}
-	return setConfig(conf)
+	return NewConfig(fileName, false, nil)
 }
 
 // ReadConfig 将某个键值对信息读取到实例中

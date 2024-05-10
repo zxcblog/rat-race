@@ -1,7 +1,7 @@
-package config
+package client
 
 import (
-	"github.com/zxcblog/rat-race/internal/client"
+	"github.com/zxcblog/rat-race/config"
 	"github.com/zxcblog/rat-race/pkg/gateway"
 	"github.com/zxcblog/rat-race/pkg/grpc"
 	"github.com/zxcblog/rat-race/pkg/logger"
@@ -13,7 +13,7 @@ var (
 	Server   *server
 	GrpcConf *grpc.Config
 	GwConf   *gateway.Config
-	DBConf   *client.DBConf
+	DBConf   *DBConfig
 	LogConf  *logger.Config
 )
 
@@ -23,7 +23,7 @@ type server struct {
 	Name    string
 }
 
-func setConfig(conf *Config) error {
+func SetConfig(conf *config.Config) error {
 	if err := setServer(conf); err != nil {
 		return nil
 	}
@@ -47,7 +47,7 @@ func setConfig(conf *Config) error {
 }
 
 // 设置服务启动的基本配置
-func setServer(conf *Config) error {
+func setServer(conf *config.Config) error {
 	if Server == nil {
 		Server = &server{}
 		return conf.ReadConfig("Service", Server)
@@ -56,7 +56,7 @@ func setServer(conf *Config) error {
 }
 
 // 设置grpc的基本配置
-func setGrpcConf(conf *Config) error {
+func setGrpcConf(conf *config.Config) error {
 	c := make(map[string]string)
 	err := conf.ReadConfig("Grpc", &c)
 	if err != nil {
@@ -82,7 +82,7 @@ func setGrpcConf(conf *Config) error {
 }
 
 // 设置gateway基本配置
-func setGwConf(conf *Config) error {
+func setGwConf(conf *config.Config) error {
 	c := make(map[string]string)
 	err := conf.ReadConfig("Gateway", &c)
 	if err != nil {
@@ -101,11 +101,11 @@ func setGwConf(conf *Config) error {
 	return nil
 }
 
-func setDBConf(conf *Config) error {
+func setDBConf(conf *config.Config) error {
 	return conf.ReadConfig("Mariadb", &DBConf)
 }
 
-func setLogConf(conf *Config) error {
+func setLogConf(conf *config.Config) error {
 	if err := conf.ReadConfig("Logger", &LogConf); err != nil {
 		return err
 	}

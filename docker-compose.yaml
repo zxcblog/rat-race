@@ -33,9 +33,6 @@ services:
     networks:
       - rat-race
 
-
-
-
   mongodb-primary:
     image: ${MONGODB_IMG}
     container_name: rat-race-mongodb
@@ -66,6 +63,7 @@ services:
       - rat-race
     environment:
       MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MYSQL_DATABASE: "rat-race" # 初始化时创建数据库
       TZ: ${TZ}
 
   redis:
