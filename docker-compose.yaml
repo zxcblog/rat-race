@@ -15,6 +15,27 @@ services:
     networks:
       - rat-race
 
+  rat-race-web:
+    container_name: rat-race-web
+    build:
+      context: ./web_admin
+      dockerfile: ./Dockerfile
+    restart: always
+    volumes:
+      - "${RAT_RACE_WEB_CONF}:/etc/nginx/conf.d/default.conf"
+      - "${RAT_RACE_WEB_LOG}:/var/log/nginx"
+    ports:
+      - "${RAT_RACE_WEB_PORT}:80"
+    environment:
+      TZ: ${TZ}
+    #    depends_on:
+#      - rat-race
+    networks:
+      - rat-race
+
+
+
+
   mongodb-primary:
     image: ${MONGODB_IMG}
     container_name: rat-race-mongodb

@@ -4,7 +4,8 @@ FROM golang:1.22.3-alpine3.18 AS builder
 ENV GO111MODULE=on
 ENV GOPROXY=https://goproxy.io,direct
 
-COPY . /go/src/github.com/zxcblog/rat-race
+# 排除 web_admin目录下的文件
+COPY --exclude=web_admin . /go/src/github.com/zxcblog/rat-race
 
 RUN cd /go/src/github.com/zxcblog/rat-race && go build .
 
@@ -22,7 +23,7 @@ RUN apk --no-cache add tzdata  && \
 COPY --from=builder /go/src/github.com/zxcblog/rat-race/rat-race /opt/
 
 # EXPOSE 设置端口映射
-EXPOSE 9000/tcp
+EXPOSE 9000
 
 # WORKDIR 设置工作目录
 WORKDIR /opt

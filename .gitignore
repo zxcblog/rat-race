@@ -11,6 +11,13 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 .idea/*
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.local
+
 # Dependency directories (remove the comment below to include it)
 # vendor/
 /logs/
@@ -18,3 +25,22 @@ go.sum
 
 /data/db
 /data/log
+
+.DS_Store
+/web_admin/node_modules/
+/web_admin/dist/
+/web_admin/npm-debug.log*
+/web_admin/yarn-debug.log*
+/web_admin/yarn-error.log*
+/web_admin/**/*.log
+
+/web_admin/tests/**/coverage/
+/web_admin/tests/e2e/reports
+/web_admin/selenium-debug.log
+
+# Editor directories and files
+
+
+/web_admin/package-lock.json
+/web_admin/yarn.lock
+
