@@ -3,6 +3,7 @@ package client
 import (
 	"fmt"
 	"github.com/pkg/errors"
+	"github.com/zxcblog/rat-race/internal/model/mariadb"
 	"github.com/zxcblog/rat-race/pkg/starter"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -44,6 +45,7 @@ func MariadbInit(conf *dbConfig) (*mariaDB, error) {
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,
 		},
+		DisableForeignKeyConstraintWhenMigrating: true, // 禁用外键约束
 	})
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("[数据库连接失败] 数据库名称：%s", conf.DbName))
@@ -61,9 +63,17 @@ func MariadbInit(conf *dbConfig) (*mariaDB, error) {
 	// 设置最大连接超时
 	sqlDB.SetConnMaxLifetime(time.Minute * conf.ConnMaxLifeTime)
 
-	mariadb := &mariaDB{DB: db}
-	mariadb.registerComp(conf)
-	return mariadb, nil
+	if Server.RunMode == RUN_MODE_DEV {
+		db = db.Debug()
+	}
+
+	maria := &mariaDB{DB: db}
+	maria.registerComp(conf)
+	if err = mariadb.InitSql(db); err != nil {
+		return nil, err
+	}
+
+	return maria, nil
 }
 
 // Close 关闭数据库连接

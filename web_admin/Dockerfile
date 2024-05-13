@@ -1,6 +1,6 @@
 FROM node:16.14.2 as builder
 
-COPY ./ /web_admin
+COPY --exclude=node_modules --exclude=package-lock.json ./ /web_admin
 
 RUN cd /web_admin && \
     npm install i && \

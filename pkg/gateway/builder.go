@@ -84,6 +84,22 @@ func (build *GWBuild) Start() {
 		Addr: build.conf.Address,
 		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
+			// 跨域配置
+			method := r.Method
+			origin := r.Header.Get("Origin")
+			if origin != "" {
+				// 允许来源配置
+				w.Header().Set("Access-Control-Allow-Origin", "*") // 可将将 * 替换为指定的域名
+				w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, UPDATE, PATCH")
+				w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
+				w.Header().Set("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Cache-Control, Content-Language, Content-Type")
+				w.Header().Set("Access-Control-Allow-Credentials", "true")
+			}
+			if method == "OPTIONS" {
+				w.WriteHeader(http.StatusNoContent)
+				return
+			}
+
 			// 启动swagger配置信息
 			if build.swagger && strings.HasPrefix(r.URL.Path, build.swaggerPrefix) {
 				build.swaggerHandler.ServeHTTP(w, r)

@@ -10,6 +10,11 @@ import (
 	"strings"
 )
 
+const (
+	RUN_MODE_DEV     = "dev"     // dev
+	RUN_MODE_RELEASE = "release" // 正式环境
+)
+
 var (
 	Server      *server
 	GrpcConf    *grpc.Config
