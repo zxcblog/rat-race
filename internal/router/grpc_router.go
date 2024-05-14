@@ -9,7 +9,10 @@ import (
 )
 
 func GRPCRouter() *grpc.GRPCBuild {
-	server := grpc.NewGRPCBuild(client.GrpcConf).RegisterServer(func(s *grpc2.Server) {
+	server := grpc.NewGRPCBuild(grpc.WithConfig(client.GrpcConf), grpc.WithLogOptions(client.Log))
+
+	// 注册grpc服务
+	server.RegisterServer(func(s *grpc2.Server) {
 		user.RegisterUserServer(s, user2.NewUserServer())
 	})
 

@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/zxcblog/rat-race/internal/client"
 	"github.com/zxcblog/rat-race/internal/router"
+	"github.com/zxcblog/rat-race/pkg/starter"
 	"github.com/zxcblog/rat-race/pkg/tools"
 	"log"
 )
@@ -20,6 +21,9 @@ func main() {
 	// 启动gateway
 	gwServer := router.GWRouter()
 	gwServer.Start()
+
+	// 输出配置信息
+	starter.Print()
 
 	// 服务关闭
 	tools.NewShutDown().Close(

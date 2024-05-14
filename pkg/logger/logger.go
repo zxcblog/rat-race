@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"context"
 	"os"
 	"time"
 
@@ -8,6 +9,14 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
+
+// ILogger 日志接口信息
+type ILogger interface {
+	Close() error
+	InfoF(ctx context.Context, format string, v ...interface{})
+	ErrorF(ctx context.Context, format string, v ...interface{})
+	DebugF(ctx context.Context, format string, v ...interface{})
+}
 
 // https://dbwu.tech/posts/golang_zap/
 type Logger struct {
@@ -75,6 +84,6 @@ func NewLogger(config *Config) *Logger {
 	}
 }
 
-func (l Logger) Close() error {
+func (l *Logger) Close() error {
 	return l.zapLogger.Sync()
 }
