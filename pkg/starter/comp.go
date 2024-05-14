@@ -1,14 +1,10 @@
 package starter
 
-import (
-	"github.com/jedib0t/go-pretty/v6/table"
-	"os"
-)
-
 type IComp interface {
-	CompName() string        // 服务名称
-	GetCompItem() []CompItem // 获取服务要进行展示在控制台的配置信息
-	IsDev() bool             // 只有在dev环境才进行输出
+	CompName() string            // 服务名称
+	GetCompItem() []CompItem     // 获取服务要进行展示在控制台的配置信息
+	SetCompItem(key, val string) // 设置要进行输出的配置信息
+	IsDev() bool                 // 只有在dev环境才进行输出
 }
 
 type CompItem struct {
@@ -16,36 +12,31 @@ type CompItem struct {
 	Value string
 }
 
-var sysTab []IComp
-
-// RegisterComp 注册要输出的配置信息
-func RegisterComp(comp IComp) {
-	sysTab = append(sysTab, comp)
+type comp struct {
+	name      string
+	isDev     bool
+	compItems []CompItem
 }
 
-// Print 控制台输出配置信息
-func Print() {
-	t := table.NewWriter()
+func NewComp(name string, isDev bool) IComp {
+	c := &comp{name: name, isDev: isDev, compItems: make([]CompItem, 0)}
 
-	// 输出到控制台
-	t.SetOutputMirror(os.Stdout)
-	t.AppendSeparator()
+	RegisterComp(c)
+	return c
+}
 
-	// 输出项目信息
-	t.AppendHeader(table.Row{"COMP_NAME", "KEY", "VALUE"})
-	for _, val := range sysTab {
-		if !val.IsDev() {
-			continue
-		}
+func (c *comp) CompName() string {
+	return c.name
+}
 
-		rows := make([]table.Row, 0)
-		rows = append(rows, []interface{}{val.CompName()})
+func (c *comp) GetCompItem() []CompItem {
+	return c.compItems
+}
 
-		for _, v := range val.GetCompItem() {
-			rows = append(rows, []interface{}{"", v.Key, v.Value})
-		}
-		t.AppendRows(rows)
-		t.AppendSeparator()
-	}
-	t.Render()
+func (c *comp) SetCompItem(key, val string) {
+	c.compItems = append(c.compItems, CompItem{Key: key, Value: val})
+}
+
+func (c *comp) IsDev() bool {
+	return c.isDev
 }

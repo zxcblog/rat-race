@@ -18,5 +18,6 @@ func GWRouter() *gateway.GWBuild {
 			return nil
 		},
 	)
+
 	return server
 }

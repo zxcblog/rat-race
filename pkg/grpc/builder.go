@@ -21,7 +21,7 @@ type GRPCBuild struct {
 	log          logger.ILogger
 	opts         []grpc.ServerOption
 
-	compItem []starter.CompItem
+	comp starter.IComp
 }
 
 // NewGRPCBuild 初始化grpc服务
@@ -46,6 +46,9 @@ func NewGRPCBuild(options ...OptionFunc) *GRPCBuild {
 	// 初始化grpc服务
 	builder.grpcS = grpc.NewServer(builder.opts...)
 
+	// 添加输出配置信息
+	builder.comp = starter.NewComp("GRPC", builder.config.RunMode == DevMod)
+
 	// 启动grpc服务
 	lis, err := net.Listen("tcp", builder.config.Address)
 	if err != nil {
@@ -68,17 +71,16 @@ func (build *GRPCBuild) RegisterServer(opts ...func(s *grpc.Server)) *GRPCBuild 
 func (build *GRPCBuild) Start() {
 	serverInfo := build.grpcS.GetServiceInfo()
 
-	build.SetCompItem("port", build.config.Address)
+	build.comp.SetCompItem("port", build.config.Address)
 	for pkg, info := range serverInfo {
 
 		names := make([]string, len(info.Methods))
 		for i, method := range info.Methods {
 			names[i] = method.Name
 		}
-		build.SetCompItem(pkg, strings.Join(names, "\n"))
+		build.comp.SetCompItem(pkg, strings.Join(names, "\n"))
 	}
 
-	starter.RegisterComp(build)
 	go func() {
 		if err := build.grpcS.Serve(build.listen); err != nil {
 			// 打印日志
@@ -89,24 +91,4 @@ func (build *GRPCBuild) Start() {
 
 func (build *GRPCBuild) ShutDown() {
 	build.grpcS.GracefulStop()
-}
-
-// CompName 实现IComp来输出配置信息
-func (build *GRPCBuild) CompName() string {
-	return "GRPC"
-}
-
-func (build *GRPCBuild) GetCompItem() []starter.CompItem {
-	return build.compItem
-}
-
-func (build *GRPCBuild) SetCompItem(key, val string) {
-	if len(build.compItem) < 0 {
-		build.compItem = make([]starter.CompItem, 0, 10)
-	}
-	build.compItem = append(build.compItem, starter.CompItem{Key: key, Value: val})
-}
-
-func (build *GRPCBuild) IsDev() bool {
-	return build.config.RunMode == DevMod
 }

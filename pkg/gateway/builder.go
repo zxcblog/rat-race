@@ -3,34 +3,41 @@ package gateway
 import (
 	"context"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/zxcblog/rat-race/pkg/starter"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"net/http"
 )
 
-type GWBuild struct {
-	ctx context.Context
+type HandlerFunc func(*Context)
 
+type GWBuild struct {
+	RouterGroup
+
+	// mux grpc-gateway 的请求多路复用器，
+	// 所有信息根据该方法进行实现
 	mux        *runtime.ServeMux
 	httpServer *http.Server
 
 	conn *grpc.ClientConn
 	conf *Config
+
+	comp starter.IComp
 }
 
 func NewGWBuild(conf *Config) *GWBuild {
 	gw := &GWBuild{
-		ctx:  context.Background(),
 		conf: conf,
 	}
 
 	gw.mux = runtime.NewServeMux()
+	gw.RouterGroup = RouterGroup{mux: gw.mux, gw: gw}
+	gw.comp = starter.NewComp("Gateway", conf.RunMode == DevMod)
 
+	// 拨号连接信息设置
 	opts := make([]grpc.DialOption, 0)
-	// grpc.WithTransportCredentials(insecure.NewCredentials()) 连接grpc服务器时跳过传输层TLS保护,通信不进行加密且不验证服务器身份
 	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
-
 	if conf.GrpcTransData > 0 {
 		opts = append(opts, grpc.WithDefaultCallOptions(
 			grpc.MaxCallSendMsgSize(conf.GrpcTransData),
@@ -39,7 +46,7 @@ func NewGWBuild(conf *Config) *GWBuild {
 	}
 
 	// 连接grpc
-	conn, err := grpc.DialContext(gw.ctx, conf.GrpcAddress, opts...)
+	conn, err := grpc.DialContext(context.Background(), conf.GrpcAddress, opts...)
 	if err != nil {
 		panic("拨号失败:" + err.Error())
 	}
@@ -52,7 +59,7 @@ func NewGWBuild(conf *Config) *GWBuild {
 
 func (build *GWBuild) RegisterServer(funcs ...func(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error) *GWBuild {
 	for _, f := range funcs {
-		if err := f(build.ctx, build.mux, build.conn); err != nil {
+		if err := f(context.Background(), build.mux, build.conn); err != nil {
 			log.Fatalf("服务注册失败:%s", err.Error())
 		}
 	}
@@ -61,6 +68,8 @@ func (build *GWBuild) RegisterServer(funcs ...func(ctx context.Context, mux *run
 }
 
 func (build *GWBuild) Start() {
+	build.comp.SetCompItem("port", build.conf.Address)
+
 	go func() {
 		if err := build.httpServer.ListenAndServe(); err != nil {
 			log.Fatalf("gateway 服务启动失败:%s", err.Error())
