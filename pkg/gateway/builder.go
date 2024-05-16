@@ -34,6 +34,7 @@ func NewGWBuild(conf *Config) *GWBuild {
 	gw.mux = runtime.NewServeMux()
 	gw.RouterGroup = RouterGroup{mux: gw.mux, gw: gw}
 	gw.comp = starter.NewComp("Gateway", conf.RunMode == DevMod)
+	gw.comp.SetCompItem("port", conf.Address)
 
 	// 拨号连接信息设置
 	opts := make([]grpc.DialOption, 0)
@@ -68,8 +69,6 @@ func (build *GWBuild) RegisterServer(funcs ...func(ctx context.Context, mux *run
 }
 
 func (build *GWBuild) Start() {
-	build.comp.SetCompItem("port", build.conf.Address)
-
 	go func() {
 		if err := build.httpServer.ListenAndServe(); err != nil {
 			log.Fatalf("gateway 服务启动失败:%s", err.Error())

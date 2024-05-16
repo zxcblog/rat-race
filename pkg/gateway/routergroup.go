@@ -29,11 +29,9 @@ func (r *RouterGroup) addHandle(httpMethod, relativePath string, handlers Handle
 // 为了放便注册路由信息和对请求的参数信息和返回信息进行处理,
 // 对 runtime.HandlerFunc 进行二次封装处理
 func (r *RouterGroup) encapHandleFunc(handlerFunc HandlerFunc) runtime.HandlerFunc {
-	f := func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
-		// TODO 封装信息
-
+	return func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+		handlerFunc(newContext(w, r, pathParams))
 	}
-	return f
 }
 
 func (r *RouterGroup) GET(s string, handlerFunc HandlerFunc) IRoutes {
