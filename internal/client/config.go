@@ -2,6 +2,7 @@ package client
 
 import (
 	"github.com/zxcblog/rat-race/config"
+	"github.com/zxcblog/rat-race/pkg/captcha"
 	"github.com/zxcblog/rat-race/pkg/gateway"
 	"github.com/zxcblog/rat-race/pkg/grpc"
 	"github.com/zxcblog/rat-race/pkg/logger"
@@ -10,12 +11,13 @@ import (
 )
 
 var (
-	Server    *server
-	GrpcConf  *grpc.Config
-	GwConf    *gateway.Config
-	DBConf    *DBConfig
-	LogConf   *logger.Config
-	RedisConf *RedisConfig
+	Server      *server
+	GrpcConf    *grpc.Config
+	GwConf      *gateway.Config
+	DBConf      *dbConfig
+	LogConf     *logger.Config
+	RedisConf   *redisConfig
+	CaptchaConf *captcha.Config
 )
 
 type server struct {
@@ -46,6 +48,10 @@ func SetConfig(conf *config.Config) error {
 	}
 
 	if err := setRedisConf(conf); err != nil {
+		return err
+	}
+
+	if err := setCaptchaConf(conf); err != nil {
 		return err
 	}
 	return nil
@@ -120,4 +126,8 @@ func setLogConf(conf *config.Config) error {
 
 func setRedisConf(conf *config.Config) error {
 	return conf.ReadConfig("Redis", &RedisConf)
+}
+
+func setCaptchaConf(conf *config.Config) error {
+	return conf.ReadConfig("Captcha", &CaptchaConf)
 }

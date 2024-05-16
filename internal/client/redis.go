@@ -8,7 +8,7 @@ import (
 	"github.com/zxcblog/rat-race/pkg/tools"
 )
 
-type RedisConfig struct {
+type redisConfig struct {
 	Host         string
 	Port         string
 	Pass         string
@@ -17,12 +17,12 @@ type RedisConfig struct {
 	PoolSize     int
 }
 
-type RedisDB struct {
+type redisDB struct {
 	*redis.Client
 }
 
 // RedisInit 数据库初始化
-func RedisInit(conf *RedisConfig) (*RedisDB, error) {
+func RedisInit(conf *redisConfig) (*redisDB, error) {
 	rdb := redis.NewClient(&redis.Options{
 		Addr:         fmt.Sprintf("%s:%s", conf.Host, conf.Port),
 		Password:     conf.Pass,
@@ -35,18 +35,18 @@ func RedisInit(conf *RedisConfig) (*RedisDB, error) {
 		return nil, err
 	}
 
-	redisClient := &RedisDB{rdb}
+	redisClient := &redisDB{rdb}
 	redisClient.registerComp(conf)
 	return redisClient, nil
 }
 
 // Close 关闭数据库连接
-func (db *RedisDB) Close() error {
+func (db *redisDB) Close() error {
 	return db.Client.Close()
 }
 
 // registerComp
-func (db *RedisDB) registerComp(conf *RedisConfig) {
+func (db *redisDB) registerComp(conf *redisConfig) {
 	// 每次启动都打印
 	comp := starter.NewComp("Redis", true)
 

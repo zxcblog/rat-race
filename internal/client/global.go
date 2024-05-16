@@ -2,17 +2,22 @@ package client
 
 import (
 	"context"
+	"github.com/mojocn/base64Captcha"
 	"github.com/zxcblog/rat-race/config"
+	"github.com/zxcblog/rat-race/internal/sys_var"
+	"github.com/zxcblog/rat-race/pkg/captcha"
 	"github.com/zxcblog/rat-race/pkg/logger"
 	"log"
+	"time"
 )
 
 var (
 	// DB 数据库操作实例
-	DB    *MariaDB
-	Log   *logger.Logger
-	Conf  *config.Config
-	Redis *RedisDB
+	DB      *mariaDB
+	Log     *logger.Logger
+	Conf    *config.Config
+	Redis   *redisDB
+	Captcha *base64Captcha.Captcha
 )
 
 // Init 初始化全局信息
@@ -36,6 +41,12 @@ func Init(fileName string) error {
 
 	if Redis, err = RedisInit(RedisConf); err != nil {
 		log.Fatalf("Redis初始化失败：%s", err.Error())
+		return err
+	}
+
+	Captcha, err = captcha.NewCaptcha(CaptchaConf, captcha.NewRedisStore(Redis.Client, time.Duration(CaptchaConf.ExpireTime)*time.Minute, sys_var.CaptchaRedisKey))
+	if err != nil {
+		log.Fatalf("验证码启动失败：%s", err.Error())
 		return err
 	}
 

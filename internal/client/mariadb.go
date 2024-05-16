@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-type DBConfig struct {
+type dbConfig struct {
 	Host            string
 	Port            string
 	User            string
@@ -21,12 +21,12 @@ type DBConfig struct {
 	MaxIdleConn     int
 }
 
-type MariaDB struct {
+type mariaDB struct {
 	*gorm.DB
 }
 
 // MariadbInit 数据库初始化
-func MariadbInit(conf *DBConfig) (*MariaDB, error) {
+func MariadbInit(conf *dbConfig) (*mariaDB, error) {
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=%t&loc=%s",
 		conf.User,
@@ -61,13 +61,13 @@ func MariadbInit(conf *DBConfig) (*MariaDB, error) {
 	// 设置最大连接超时
 	sqlDB.SetConnMaxLifetime(time.Minute * conf.ConnMaxLifeTime)
 
-	mariadb := &MariaDB{DB: db}
+	mariadb := &mariaDB{DB: db}
 	mariadb.registerComp(conf)
 	return mariadb, nil
 }
 
 // Close 关闭数据库连接
-func (db *MariaDB) Close() error {
+func (db *mariaDB) Close() error {
 	sqldb, err := db.DB.DB()
 	if err != nil {
 		return err
@@ -76,7 +76,7 @@ func (db *MariaDB) Close() error {
 }
 
 // registerComp
-func (db *MariaDB) registerComp(conf *DBConfig) {
+func (db *mariaDB) registerComp(conf *dbConfig) {
 	// 每次启动都打印
 	comp := starter.NewComp("Mysql", true)
 

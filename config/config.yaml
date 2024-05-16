@@ -39,3 +39,10 @@ Redis:
   MinIdleConns: 5 # 最小空闲连接数
   PoolSize: 10 # 连接池个数
 
+Captcha:
+  Type: string # audio 音频, string 字符串 + 数字, math 算术运算
+  Height: 50
+  Width: 100
+  NoiseCount: 0
+  Length: 4
+  ExpireTime: 30
