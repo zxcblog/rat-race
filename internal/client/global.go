@@ -9,9 +9,10 @@ import (
 
 var (
 	// DB 数据库操作实例
-	DB   *MariaDB
-	Log  *logger.Logger
-	Conf *config.Config
+	DB    *MariaDB
+	Log   *logger.Logger
+	Conf  *config.Config
+	Redis *RedisDB
 )
 
 // Init 初始化全局信息
@@ -29,6 +30,12 @@ func Init(fileName string) error {
 	}
 
 	if DB, err = MariadbInit(DBConf); err != nil {
+		log.Fatalf("Mariadb初始化失败：%s", err.Error())
+		return err
+	}
+
+	if Redis, err = RedisInit(RedisConf); err != nil {
+		log.Fatalf("Redis初始化失败：%s", err.Error())
 		return err
 	}
 

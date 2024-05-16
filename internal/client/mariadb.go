@@ -3,6 +3,7 @@ package client
 import (
 	"fmt"
 	"github.com/pkg/errors"
+	"github.com/zxcblog/rat-race/pkg/starter"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
@@ -21,12 +22,12 @@ type DBConfig struct {
 }
 
 type MariaDB struct {
-	DB   *gorm.DB
-	Conf *DBConfig
+	*gorm.DB
 }
 
 // MariadbInit 数据库初始化
 func MariadbInit(conf *DBConfig) (*MariaDB, error) {
+
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=%t&loc=%s",
 		conf.User,
 		conf.Pass,
@@ -60,7 +61,9 @@ func MariadbInit(conf *DBConfig) (*MariaDB, error) {
 	// 设置最大连接超时
 	sqlDB.SetConnMaxLifetime(time.Minute * conf.ConnMaxLifeTime)
 
-	return &MariaDB{DB: db, Conf: conf}, nil
+	mariadb := &MariaDB{DB: db}
+	mariadb.registerComp(conf)
+	return mariadb, nil
 }
 
 // Close 关闭数据库连接
@@ -70,4 +73,16 @@ func (db *MariaDB) Close() error {
 		return err
 	}
 	return sqldb.Close()
+}
+
+// registerComp
+func (db *MariaDB) registerComp(conf *DBConfig) {
+	// 每次启动都打印
+	comp := starter.NewComp("Mysql", true)
+
+	comp.SetCompItem("user", conf.User)
+	comp.SetCompItem("pass", conf.Pass)
+	comp.SetCompItem("host", conf.Host)
+	comp.SetCompItem("port", conf.Port)
+	comp.SetCompItem("db_name", conf.DbName)
 }

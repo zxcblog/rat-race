@@ -10,11 +10,12 @@ import (
 )
 
 var (
-	Server   *server
-	GrpcConf *grpc.Config
-	GwConf   *gateway.Config
-	DBConf   *DBConfig
-	LogConf  *logger.Config
+	Server    *server
+	GrpcConf  *grpc.Config
+	GwConf    *gateway.Config
+	DBConf    *DBConfig
+	LogConf   *logger.Config
+	RedisConf *RedisConfig
 )
 
 type server struct {
@@ -41,6 +42,10 @@ func SetConfig(conf *config.Config) error {
 	}
 
 	if err := setLogConf(conf); err != nil {
+		return err
+	}
+
+	if err := setRedisConf(conf); err != nil {
 		return err
 	}
 	return nil
@@ -111,4 +116,8 @@ func setLogConf(conf *config.Config) error {
 	}
 	LogConf.Name = Server.Name
 	return nil
+}
+
+func setRedisConf(conf *config.Config) error {
+	return conf.ReadConfig("Redis", &RedisConf)
 }

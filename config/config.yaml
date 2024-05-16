@@ -30,3 +30,12 @@ Logger:
   IsConsole: true
   FileName: ./logs/error.log
   Level: info
+
+Redis:
+  Host: 127.0.0.1
+  Port: 6379
+  Pass: 123456 # requirepass
+  Db: 0
+  MinIdleConns: 5 # 最小空闲连接数
+  PoolSize: 10 # 连接池个数
+
