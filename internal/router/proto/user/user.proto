@@ -54,6 +54,7 @@ message LoginReq {
   string account  = 2[(validate.rules).string = {min_len: 1}]; // 账号
   string password = 3; // 认证密码
   string captcha  = 4; // 验证码
+  string captcha_id = 5; // 验证码id
 }
 
 message UserAuthRes {
