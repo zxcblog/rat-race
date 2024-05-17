@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"github.com/zxcblog/rat-race/internal/client"
 	"github.com/zxcblog/rat-race/internal/router"
 	"github.com/zxcblog/rat-race/pkg/starter"
@@ -19,7 +20,11 @@ func main() {
 	grpcServer.Start()
 
 	// 启动gateway
-	gwServer := router.GWRouter()
+	gwServer, err := router.GWRouter()
+	if err != nil {
+		client.Log.ErrorF(context.Background(), "gateway启动失败：%s", err.Error())
+		return
+	}
 	gwServer.Start()
 
 	// 输出配置信息

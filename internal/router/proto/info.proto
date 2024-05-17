@@ -12,7 +12,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
     description: "个人golang项目";
     contact: {
       name: "zxc";
-      url: "github.com/zxcblog/rat-race";
+      url: "https://github.com/zxcblog/rat-race";
       email: "zxc_7310@163.com";
     };
     license: {

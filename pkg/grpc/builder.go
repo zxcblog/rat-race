@@ -25,7 +25,7 @@ type GRPCBuild struct {
 }
 
 // NewGRPCBuild 初始化grpc服务
-func NewGRPCBuild(options ...OptionFunc) *GRPCBuild {
+func NewGRPCBuild(options ...Options) *GRPCBuild {
 	builder := &GRPCBuild{
 		interceptors: make([]grpc.UnaryServerInterceptor, 0),
 		opts:         make([]grpc.ServerOption, 0),

@@ -21,20 +21,20 @@ func WithConfig(config *Config) OptionFunc {
 	}
 }
 
-func WithInterceptors(interceptors ...grpc.UnaryServerInterceptor) OptionFunc {
-	return func(build *GRPCBuild) {
+func WithInterceptors(interceptors ...grpc.UnaryServerInterceptor) Options {
+	return OptionFunc(func(build *GRPCBuild) {
 		build.interceptors = append(build.interceptors, interceptors...)
-	}
+	})
 }
 
-func WithServerOptions(options ...grpc.ServerOption) OptionFunc {
-	return func(build *GRPCBuild) {
+func WithServerOptions(options ...grpc.ServerOption) Options {
+	return OptionFunc(func(build *GRPCBuild) {
 		build.opts = append(build.opts)
-	}
+	})
 }
 
-func WithLogOptions(logger logger.ILogger) OptionFunc {
-	return func(build *GRPCBuild) {
+func WithLogOptions(logger logger.ILogger) Options {
+	return OptionFunc(func(build *GRPCBuild) {
 		build.log = logger
-	}
+	})
 }

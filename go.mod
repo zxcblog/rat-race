@@ -3,6 +3,7 @@ module github.com/zxcblog/rat-race
 go 1.22.1
 
 require (
+	github.com/elazarl/go-bindata-assetfs v1.0.1
 	github.com/envoyproxy/protoc-gen-validate v1.0.4
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
