@@ -40,9 +40,9 @@ Redis:
   PoolSize: 10 # 连接池个数
 
 Captcha:
-  Type: string # audio 音频, string 字符串 + 数字, math 算术运算
+  Type: math # audio 音频, string 字符串 + 数字, math 算术运算
   Height: 50
   Width: 100
   NoiseCount: 0
   Length: 4
-  ExpireTime: 30
+  ExpireTime: 10
