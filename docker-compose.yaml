@@ -81,6 +81,27 @@ services:
     environment:
       TZ: ${TZ}
 
+  etcd:
+    image: ${ETCD_IMG}
+    container_name: rat-race-etcd
+    restart: always
+    ports:
+      - "${ETCD1_PORT}:2379"
+      - "${ETCD1_80_PORT}:2380"
+    volumes:
+      - "${ETCD_YAML_FILE}:/opt/bitnami/etcd/conf/etcd.yaml"
+      - "${ETCD_DATA}:/etcd/data:rw"
+#    entrypoint: ["/opt/bitnami/etcd/bin/etcd", "--config-file", "/opt/bitnami/etcd/conf/etcd.yaml"]
+    environment:
+        ETCDCTL_API: 3
+        TZ: ${TZ}
+        ETCD_ROOT_PASSWORD: ${ETCD_ROOT_PASSWORD}
+
+    networks:
+      - rat-race
+
+
+
 networks:
   rat-race:
     driver: bridge

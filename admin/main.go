@@ -6,14 +6,25 @@ import (
 	"github.com/zxcblog/rat-race/internal/router"
 	"github.com/zxcblog/rat-race/pkg/starter"
 	"github.com/zxcblog/rat-race/pkg/tools"
+	"google.golang.org/grpc/grpclog"
 	"log"
+	"os"
 )
 
+// TODO
+// 跨域配置
+// gateway返回数据格式统一设置
+// 请求时记录访问日志
+// swagger配置信息设置
 func main() {
 	if err := client.Init("./config/config.yaml"); err != nil {
 		log.Fatalf("初始化全局信息失败：%s", err.Error())
 		return
 	}
+
+	grpclog.NewLoggerV2(os.Stdout, os.Stdout, os.Stdout)
+
+	//grpclog.SetLoggerV2(client.Log)
 
 	// 启动grpc
 	grpcServer := router.GRPCRouter()

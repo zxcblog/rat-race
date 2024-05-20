@@ -5,7 +5,7 @@ ENV GO111MODULE=on
 ENV GOPROXY=https://goproxy.io,direct
 
 # 排除 web_admin目录下的文件
-COPY --exclude=web_admin . /go/src/github.com/zxcblog/rat-race
+COPY . /go/src/github.com/zxcblog/rat-race
 
 RUN cd /go/src/github.com/zxcblog/rat-race && go build .
 
