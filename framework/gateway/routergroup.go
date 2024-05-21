@@ -69,6 +69,9 @@ func (r *RouterGroup) calculateAbsolutePath(relativePath string) string {
 func (r *RouterGroup) addHandle(httpMethod, relativePath string, handlers HandlerFunc) IRoutes {
 	// TODO 打印自定义添加日志信息
 
+	// 将分组路径进行合并
+	relativePath = joinPaths(r.basePath, relativePath)
+
 	err := r.mux.HandlePath(httpMethod, relativePath, r.encapHandleFunc(handlers))
 	if err != nil {
 		panic(err.Error())
