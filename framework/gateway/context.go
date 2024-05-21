@@ -1,12 +1,10 @@
 package gateway
 
 import (
-	"github.com/zxcblog/rat-race/pkg/gateway/render"
+	"github.com/zxcblog/rat-race/framework/gateway/render"
 	"net/http"
 	"time"
 )
-
-type H map[string]interface{}
 
 // Context gateway 自定义路由上下文解析
 type Context struct {
@@ -49,6 +47,23 @@ func (c *Context) Render(code int, r render.Render) {
 // Status 设置 http 返回的状态值
 func (c *Context) Status(code int) {
 	c.Writer.WriteHeader(code)
+}
+
+// File 启动一个文件服务
+func (c *Context) File(filepath string) {
+	http.ServeFile(c.Writer, c.Request, filepath)
+}
+
+// FileFromFS 通过 http.FileSystem 启动一个文件流服务
+// filepath: 路径参数名， 从请求路径中获取到filepath的地址信息，将信息当作路由
+func (c *Context) FileFromFS(filepath string, fs http.FileSystem) {
+	defer func(old string) {
+		c.Request.URL.Path = old
+	}(c.Request.URL.Path)
+
+	c.Request.URL.Path = c.PathParams[filepath]
+
+	http.FileServer(fs).ServeHTTP(c.Writer, c.Request)
 }
 
 // 实现 Context.Context 接口
