@@ -2,9 +2,12 @@ package gateway
 
 import (
 	"github.com/zxcblog/rat-race/framework/gateway/render"
+	"math"
 	"net/http"
 	"time"
 )
+
+const abortIndex int8 = math.MaxInt8 >> 1
 
 // Context gateway 自定义路由上下文解析
 type Context struct {
@@ -16,19 +19,46 @@ type Context struct {
 	Path   string
 	Method string
 
+	// 中间件
+	handlers []HandlerFunc
+	index    int8
+
 	StatusCode int
 }
 
-func newContext(w http.ResponseWriter, r *http.Request, pathParams map[string]string) *Context {
+func newContext(w http.ResponseWriter, r *http.Request, pathParams map[string]string, handlers []HandlerFunc) *Context {
 	ctx := &Context{
 		Writer:     responseWriter{w, 0},
 		Request:    r,
 		PathParams: pathParams,
 		Path:       r.URL.Path,
 		Method:     r.Method,
+		handlers:   handlers,
+		index:      -1,
 	}
 
 	return ctx
+}
+
+// Next 中间件信息修复
+func (c *Context) Next() {
+	c.index++
+	for c.index < int8(len(c.handlers)) {
+		if c.handlers[c.index] == nil {
+			continue
+		}
+
+		c.handlers[c.index](c)
+		c.index++
+	}
+}
+
+func (c *Context) IsAborted() bool {
+	return c.index >= abortIndex
+}
+
+func (c *Context) Abort() {
+	c.index = abortIndex
 }
 
 // JSON 返回json格式数据信息

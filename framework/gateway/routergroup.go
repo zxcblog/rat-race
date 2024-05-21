@@ -51,7 +51,7 @@ func (r *RouterGroup) Group(relativePath string, handlers ...HandlerFunc) *Route
 // 合并路由中间件
 func (r *RouterGroup) combineHandlers(handlers ...HandlerFunc) []HandlerFunc {
 	finalSize := len(r.Handlers) + len(handlers)
-	if finalSize >= 32 {
+	if finalSize >= int(abortIndex) {
 		panic("中间件太多了")
 	}
 
@@ -84,12 +84,8 @@ func (r *RouterGroup) addHandle(httpMethod, relativePath string, handlers Handle
 // 对 runtime.HandlerFunc 进行二次封装处理
 func (r *RouterGroup) encapHandleFunc(handlerFunc HandlerFunc) runtime.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx := newContext(w, req, pathParams)
-		for _, handler := range r.Handlers {
-			handler(ctx)
-		}
-
-		handlerFunc(ctx)
+		ctx := newContext(w, req, pathParams, append(r.Handlers, handlerFunc))
+		ctx.Next()
 	}
 }
 
