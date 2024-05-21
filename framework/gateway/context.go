@@ -40,6 +40,15 @@ func newContext(w http.ResponseWriter, r *http.Request, pathParams map[string]st
 	return ctx
 }
 
+// Header 设置返回的请求头信息， 如果value == "" 将删除对应的key值
+func (c *Context) Header(key, value string) {
+	if value == "" {
+		c.Writer.Header().Del(key)
+		return
+	}
+	c.Writer.Header().Set(key, value)
+}
+
 // Next 中间件信息修复
 func (c *Context) Next() {
 	c.index++
@@ -59,6 +68,12 @@ func (c *Context) IsAborted() bool {
 
 func (c *Context) Abort() {
 	c.index = abortIndex
+}
+
+// AbortWithStatus 调用 Abort 并返回指定状态码
+func (c *Context) AbortWithStatus(code int) {
+	c.Status(code)
+	c.Abort()
 }
 
 // JSON 返回json格式数据信息
