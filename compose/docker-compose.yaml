@@ -1,0 +1,105 @@
+version: "3.9"
+services:
+#  rat-race:
+#    container_name: rat-race
+#    build:
+#      context: ./
+#      dockerfile: ./Dockerfile
+#    restart: always
+#    ports:
+#      - "${RAT_RACE_PORT}:9000"
+#    depends_on:
+#      - mongodb-primary
+#      - mariadb
+#      - redis
+#    networks:
+#      - rat-race
+#
+#  rat-race-web:
+#    container_name: rat-race-web
+#    build:
+#      context: ./web_admin
+#      dockerfile: ./Dockerfile
+#    restart: always
+#    volumes:
+#      - "${RAT_RACE_WEB_CONF}:/etc/nginx/conf.d/default.conf"
+#      - "${RAT_RACE_WEB_LOG}:/var/log/nginx"
+#    ports:
+#      - "${RAT_RACE_WEB_PORT}:80"
+#    environment:
+#      TZ: ${TZ}
+#    #    depends_on:
+##      - rat-race
+#    networks:
+#      - rat-race
+#
+#  mongodb-primary:
+#    image: ${MONGODB_IMG}
+#    container_name: rat-race-mongodb
+#    restart: always
+#    volumes:
+#      - "${MONGODB_CONF}:/usr/local/etc"
+#      - "${MONGODB_DATA_PRIMARY}:/data/db"
+#      - "${MONGODB_LOG_PRIMARY}:/var/log/mongodb"
+#    ports:
+#      - "${MONGODB_PRIMARY_PORT}:27017"
+#    networks:
+#      - rat-race
+#    environment:
+#      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER}
+#      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+#      TZ: ${TZ}
+#
+#  mariadb:
+#    image: ${MARIADB_IMG}
+#    container_name: rat-race-mariadb
+#    restart: always
+#    ports:
+#      - "${MARIADB_PORT}:3306"
+#    volumes:
+#      - "${MARIADB_CONF}:/etc/mysql/conf.d/mysql.cnf"
+#      - "${MARIADB_DATA}:/var/lib/mysql"
+#    networks:
+#      - rat-race
+#    environment:
+#      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+#      MYSQL_DATABASE: "rat-race" # 初始化时创建数据库
+#      TZ: ${TZ}
+#
+#  redis:
+#    image: ${REDIS_IMG}
+#    container_name: rat-race-redis
+#    restart: always
+#    ports:
+#      - "${REDIS_PORT}:6379"
+#    volumes:
+#      - "${REDIS_CONF}:/etc/redis.conf"
+#      - "${REDIS_DATA}:/data"
+#    entrypoint: ["redis-server", "/etc/redis.conf"]
+#    networks:
+#      - rat-race
+#    environment:
+#      TZ: ${TZ}
+#
+  etcd:
+    image: ${ETCD_IMG}
+    container_name: rat-race-etcd
+    restart: always
+    ports:
+      - "${ETCD1_PORT}:2379"
+      - "${ETCD1_80_PORT}:2380"
+    volumes:
+      - "${ETCD_YAML_FILE}:/opt/bitnami/etcd/conf/etcd.yaml"
+      - "${ETCD_DATA}:/etcd/data:rw"
+#    entrypoint: ["/opt/bitnami/etcd/bin/etcd", "--config-file", "/opt/bitnami/etcd/conf/etcd.yaml"]
+    environment:
+        ETCDCTL_API: 3
+        TZ: ${TZ}
+        ETCD_ROOT_PASSWORD: ${ETCD_ROOT_PASSWORD}
+    networks:
+      - rat-race
+
+networks:
+  rat-race:
+    driver: bridge
+    name: rat-race

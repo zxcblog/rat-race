@@ -1,0 +1,115 @@
+version: "3.9"
+services:
+  # https://blog.renzicu.com/2023/06/226.html
+  kafka-primary:
+    image: ${KAFKA_IMG}
+    container_name: kafka-primary
+    hostname: kafka-primary
+    ports:
+      - "${KAFKA_PRIMARY_PORT}:9092"
+    volumes:
+      - "${KAFKA_PRIMARY_DATA}:/bitnami/kafka"
+      - "${KAFKA_PRIMARY_LOG}:/tmp/log"
+    environment:
+      # KRaft settings
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka-primary:9093
+#      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka-primary:9093,1@kafka-node1:9093,2@kafka-node2:9093
+#      - KAFKA_KRAFT_CLUSTER_ID=abcdefghijklmnopqrstuv
+      # Listeners
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER # 控制器使用的侦听器名称， 在 kRaft模式下运行是必须的。与控制器仲裁通信时，代理将始终使用列表中的第一个侦听器
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      # CONFIG
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false # 禁止自动创建Topic
+      - KAFKA_CFG_LOG_DIRS=/tmp/log # kafka日志保存目录
+#      # Clustering
+#      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=3 # 设置副本数量为3个, 因为只搭建3个节点
+#      - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
+#      - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=2
+    networks:
+      - rat-race
+
+#  kafka-node1:
+#    image: ${KAFKA_IMG}
+#    container_name: kafka-node1
+#    hostname: kafka-node1
+#    ports:
+#      - "${KAFKA_NODE1_PORT}:9092"
+#    volumes:
+#      - "${KAFKA_NODE1_DATA}:/bitnami/kafka"
+#    environment:
+#      # KRaft settings
+#      - KAFKA_CFG_NODE_ID=1
+#      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+#      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka-primary:9093,1@kafka-node1:9093,2@kafka-node2:9093
+#      - KAFKA_KRAFT_CLUSTER_ID=abcdefghijklmnopqrstuv
+#      # Listeners
+#      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+#      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092
+#      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+#      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+#      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+#      # Clustering
+#      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=3
+#      - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
+#      - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=2
+#    depends_on:
+#      - kafka-primary
+#    networks:
+#      - rat-race
+#
+#
+#  kafka-node2:
+#    image: ${KAFKA_IMG}
+#    container_name: kafka-node2
+#    hostname: kafka-node2
+#    ports:
+#      - "${KAFKA_NODE2_PORT}:9092"
+#    volumes:
+#      - "${KAFKA_NODE2_DATA}:/bitnami/kafka"
+#    environment:
+#      # KRaft settings
+#      - KAFKA_CFG_NODE_ID=2
+#      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+#      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka-primary:9093,1@kafka-node1:9093,2@kafka-node2:9093
+#      - KAFKA_KRAFT_CLUSTER_ID=abcdefghijklmnopqrstuv
+#      # Listeners
+#      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+#      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092
+#      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+#      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+#      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+#      # Clustering
+#      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=3
+#      - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
+#      - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=2
+#    depends_on:
+#      - kafka-primary
+#      - kafka-node1
+#    networks:
+#      - rat-race
+
+  kafka-ui:
+    image: ${KAFKA_UI_IMG}
+    container_name: kafka-ui
+    ports:
+      - "${KAFKA_UI_PORT}:8080"
+    volumes:
+      - "${KAFKA_UI_CONF}:/config.yaml"
+    environment:
+      SPRING_CONFIG_ADDITIONAL-LOCATION: "/config.yaml"
+    depends_on:
+      - kafka-primary
+#      - kafka-node1
+#      - kafka-node2
+    networks:
+      - rat-race
+
+networks:
+  rat-race:
+    driver: bridge
+    name: rat-race

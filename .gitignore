@@ -44,3 +44,5 @@ go.sum
 /web_admin/package-lock.json
 /web_admin/yarn.lock
 
+/compose/data/**/data/
+/compose/data/**/log/
