@@ -2,6 +2,7 @@ package gateway
 
 import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/zxcblog/rat-race/framework/logger"
 	"net/http"
 )
 
@@ -32,6 +33,7 @@ type RouterGroup struct {
 	Handlers []HandlerFunc
 
 	mux *runtime.ServeMux
+	log logger.ILogger
 }
 
 func (r *RouterGroup) Use(middleware ...HandlerFunc) IRoutes {
@@ -67,11 +69,10 @@ func (r *RouterGroup) calculateAbsolutePath(relativePath string) string {
 }
 
 func (r *RouterGroup) addHandle(httpMethod, relativePath string, handlers HandlerFunc) IRoutes {
-	// TODO 打印自定义添加日志信息
+	r.log.DebugF("%-6s %-25s --> %s (%d handlers)", httpMethod, relativePath, nameOfFunction(handlers), len(r.Handlers)+1)
 
 	// 将分组路径进行合并
 	relativePath = joinPaths(r.basePath, relativePath)
-
 	err := r.mux.HandlePath(httpMethod, relativePath, r.encapHandleFunc(handlers))
 	if err != nil {
 		panic(err.Error())

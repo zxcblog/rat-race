@@ -4,6 +4,7 @@ import (
 	"github.com/zxcblog/rat-race/admin/pkg/tools"
 	"github.com/zxcblog/rat-race/framework"
 	"github.com/zxcblog/rat-race/framework/gateway"
+	"github.com/zxcblog/rat-race/framework/logger"
 )
 
 // TODO
@@ -12,7 +13,9 @@ import (
 // 请求时记录访问日志
 // swagger配置信息设置
 func main() {
-	engine := framework.New()
+	engine := framework.New(
+		framework.WithLogInstance(logger.NewLogger("rat-race", logger.WithConsoleCore(logger.GetZapEncode(), "debug"))),
+	)
 
 	engine.GET("/hello", func(ctx *gateway.Context) {
 		ctx.JSON(404, "hello word")

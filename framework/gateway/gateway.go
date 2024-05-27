@@ -1,8 +1,9 @@
 package gateway
 
 import (
+	"fmt"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"log"
+	"github.com/zxcblog/rat-race/framework/logger"
 	"net/http"
 )
 
@@ -13,21 +14,27 @@ type H map[string]interface{}
 type Gateway struct {
 	RouterGroup
 
+	log logger.ILogger
+
 	mux    *runtime.ServeMux
 	server *http.Server
 }
 
 // New 启动gateway服务
-func New() *Gateway {
+func New(log logger.ILogger) *Gateway {
 	mux := runtime.NewServeMux()
 
-	return &Gateway{
+	gateway := &Gateway{
 		RouterGroup: RouterGroup{
 			basePath: "/",
 			mux:      mux,
+			log:      log,
 		},
+		log: log,
 		mux: mux,
 	}
+
+	return gateway
 }
 
 func (g *Gateway) Run() {
@@ -38,7 +45,7 @@ func (g *Gateway) Run() {
 
 	go func() {
 		if err := g.server.ListenAndServe(); err != nil {
-			log.Fatalf("gateway 服务启动失败:%s", err.Error())
+			panic(fmt.Sprintf("gateway 服务启动失败:%s", err.Error()))
 		}
 	}()
 }

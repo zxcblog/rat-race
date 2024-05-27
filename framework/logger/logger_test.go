@@ -7,17 +7,7 @@ import (
 
 // 测试日志打印信息
 func TestLogger(t *testing.T) {
-	logger := NewLogger(&Config{
-		MaxSize:    128,
-		MaxAge:     30,
-		MaxBackups: 300,
-		Compress:   true,
-		LocalTime:  true,
-		IsConsole:  true,
-		FileName:   "./log/error.log",
-		Level:      "error",
-		Name:       "rat-race",
-	})
+	logger := NewLogger("rat-race", WithConsoleCore(nil, "info"))
 
 	ctx := context.Background()
 
