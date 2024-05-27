@@ -25,6 +25,7 @@ func New(log logger.ILogger) *Grpc {
 	return &Grpc{
 		server: server,
 		listen: lis,
+		log:    log,
 	}
 }
 
