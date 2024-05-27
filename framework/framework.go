@@ -25,10 +25,12 @@ func New(options ...Options) *Engine {
 		o.apply(engine)
 	}
 
+	engine.log.DebugF("服务初始化完成，正在启动中")
+
 	// 添加http服务
 	engine.Gateway = gateway.New(engine.log)
+	engine.Grpc = grpc.New(engine.log)
 
-	engine.log.DebugF("服务初始化完成，正在启动中")
 	return engine
 }
 

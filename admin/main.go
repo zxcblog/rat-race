@@ -1,6 +1,8 @@
 package main
 
 import (
+	"github.com/zxcblog/rat-race/admin/internal/router/pb/user"
+	user2 "github.com/zxcblog/rat-race/admin/internal/server/user"
 	"github.com/zxcblog/rat-race/admin/pkg/tools"
 	"github.com/zxcblog/rat-race/framework"
 	"github.com/zxcblog/rat-race/framework/gateway"
@@ -24,6 +26,8 @@ func main() {
 	//engine.StaticFile("/config", "./config/config.yaml")
 	engine.StaticFileFS("/config/{path}", "path", gateway.Dir("./config", true))
 
+	// 注册grpc服务
+	engine.RegisterServer(&user.User_ServiceDesc, user2.NewUserServer())
 	engine.Run()
 
 	//if err := client.Init("./config/config.yaml"); err != nil {

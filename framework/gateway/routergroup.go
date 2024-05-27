@@ -32,8 +32,8 @@ type RouterGroup struct {
 	// 路由中间件
 	Handlers []HandlerFunc
 
-	mux *runtime.ServeMux
 	log logger.ILogger
+	mux *runtime.ServeMux
 }
 
 func (r *RouterGroup) Use(middleware ...HandlerFunc) IRoutes {

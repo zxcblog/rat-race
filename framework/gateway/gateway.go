@@ -30,8 +30,8 @@ func New(log logger.ILogger) *Gateway {
 			mux:      mux,
 			log:      log,
 		},
-		log: log,
 		mux: mux,
+		log: log,
 	}
 
 	return gateway
@@ -42,6 +42,7 @@ func (g *Gateway) Run() {
 		Addr:    ":8080",
 		Handler: g.mux,
 	}
+	g.log.InfoF("gateway服务启动成功，监听地址信息：%s", g.server.Addr)
 
 	go func() {
 		if err := g.server.ListenAndServe(); err != nil {

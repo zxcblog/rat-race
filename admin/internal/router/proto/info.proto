@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/zxcblog/rat-race/internal/router/pb;pb";
+option go_package = "github.com/zxcblog/rat-race/admin/internal/router/pb;pb";
 
 import "protoc-gen-openapiv2/options/annotations.proto";
 

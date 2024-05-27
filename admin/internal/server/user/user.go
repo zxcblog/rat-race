@@ -2,7 +2,7 @@ package user
 
 import (
 	"context"
-	"github.com/zxcblog/rat-race/internal/router/pb/user"
+	"github.com/zxcblog/rat-race/admin/internal/router/pb/user"
 )
 
 type UserServer struct {
@@ -18,9 +18,9 @@ func (u *UserServer) Register(ctx context.Context, req *user.RegisterReq) (*user
 }
 
 func (u *UserServer) Login(ctx context.Context, req *user.LoginReq) (*user.UserAuthRes, error) {
-	if err := req.Validate(); err != nil {
-		return nil, err
-	}
+	//if err := req.Validate(); err != nil {
+	//	return nil, err
+	//}
 
 	//TODO implement me
 	return &user.UserAuthRes{

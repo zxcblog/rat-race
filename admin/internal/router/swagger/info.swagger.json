@@ -16,6 +16,9 @@
   },
   "tags": [
     {
+      "name": "Role"
+    },
+    {
       "name": "User"
     }
   ],
@@ -26,6 +29,38 @@
     "application/json"
   ],
   "paths": {
+    "/v1/role": {
+      "post": {
+        "operationId": "Role_List",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListRes"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ListReq"
+            }
+          }
+        ],
+        "tags": [
+          "Role"
+        ]
+      }
+    },
     "/v1/user/login": {
       "post": {
         "summary": "Login 用户登录",
@@ -135,6 +170,12 @@
           "title": "认证过期时间"
         }
       }
+    },
+    "v1ListReq": {
+      "type": "object"
+    },
+    "v1ListRes": {
+      "type": "object"
     },
     "v1LoginReq": {
       "type": "object",

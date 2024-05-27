@@ -11,6 +11,6 @@ func TestLogger(t *testing.T) {
 
 	ctx := context.Background()
 
-	logger.ErrorF(ctx, "测试 error 级别日志:%s", "error")
-	logger.InfoF(ctx, "测试 info 级别日志:%s", "info")
+	logger.ErrorFWithCtx(ctx, "测试 error 级别日志:%s", "error")
+	logger.InfoFWithCtx(ctx, "测试 info 级别日志:%s", "info")
 }
