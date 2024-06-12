@@ -1,5 +1,26 @@
 version: "3.9"
 services:
+  # https://github.com/bitnami/containers/blob/main/bitnami/schema-registry/README.md
+  # 搭建kafka数据一致性的 schema-registry
+
+  # 生成认证证书
+  #docker run --rm -it -v "$(pwd):/workspace" --workdir /workspace openjdk:latest keytool -genkeypair -alias myserverkey -keyalg RSA -keysize 2048 -keystore server.keystore.jks -validity 365 -dname "CN=YourServerName, OU=OrgUnit, O=Organization, L=City, ST=State, C=CountryCode" -storepass mypassword -keypass mypassword
+
+  # 生成truststore证书
+  # docker run --rm -it -v "$(pwd):/workspace" --workdir /workspace openjdk:latest keytool -import -trustcacerts -keystore confluent.truststore.jks -storepass confluenttruststorepass -noprompt -alias confluent-kafka-ca -file ca.pem
+
+#
+#  # Sign and import the host certificate into the keystore
+#  docker run --rm -it -v "$(pwd):/workspace" --workdir /workspace openjdk:latest keytool -noprompt -keystore kafka.client.truststore.jks -alias CARoot -import -file snakeoil-ca-1.crt -storepass confluent -keypass confluent
+#  keytool -noprompt -keystore /tmp/kafka.$i.keystore.jks -alias $i -import -file /tmp/$i-ca1-signed.crt -storepass confluent -keypass confluent -ext "SAN=dns:$i,dns:localhost"
+#  #keytool -list -v -keystore kafka.$i.keystore.jks -storepass confluent
+#
+#  # Create truststore and import the CA cert
+#  keytool -noprompt -keystore /tmp/kafka.$i.truststore.jks -alias CARoot -import -file /tmp/snakeoil-ca-1.crt -storepass confluent -keypass confluent
+
+
+
+
   # https://blog.renzicu.com/2023/06/226.html
   kafka-primary:
     image: ${KAFKA_IMG}
@@ -11,25 +32,17 @@ services:
       - "${KAFKA_PRIMARY_DATA}:/bitnami/kafka"
       - "${KAFKA_PRIMARY_LOG}:/tmp/log"
     environment:
-      # KRaft settings
-      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_NODE_ID=1
       - KAFKA_CFG_PROCESS_ROLES=controller,broker
-      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka-primary:9093
-#      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka-primary:9093,1@kafka-node1:9093,2@kafka-node2:9093
-#      - KAFKA_KRAFT_CLUSTER_ID=abcdefghijklmnopqrstuv
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-primary:9093
+      - KAFKA_KRAFT_CLUSTER_ID=abcdefghijklmnopqrstuv
       # Listeners
       - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
       - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
-      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER # 控制器使用的侦听器名称， 在 kRaft模式下运行是必须的。与控制器仲裁通信时，代理将始终使用列表中的第一个侦听器
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
-      # CONFIG
-      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false # 禁止自动创建Topic
-      - KAFKA_CFG_LOG_DIRS=/tmp/log # kafka日志保存目录
-#      # Clustering
-#      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=3 # 设置副本数量为3个, 因为只搭建3个节点
-#      - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
-#      - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=2
+
     networks:
       - rat-race
 
@@ -102,8 +115,8 @@ services:
       - "${KAFKA_UI_CONF}:/config.yaml"
     environment:
       SPRING_CONFIG_ADDITIONAL-LOCATION: "/config.yaml"
-    depends_on:
-      - kafka-primary
+#    depends_on:
+#      - kafka-primary
 #      - kafka-node1
 #      - kafka-node2
     networks:

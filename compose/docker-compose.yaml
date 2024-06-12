@@ -33,22 +33,22 @@ services:
 #    networks:
 #      - rat-race
 #
-#  mongodb-primary:
-#    image: ${MONGODB_IMG}
-#    container_name: rat-race-mongodb
-#    restart: always
-#    volumes:
-#      - "${MONGODB_CONF}:/usr/local/etc"
-#      - "${MONGODB_DATA_PRIMARY}:/data/db"
-#      - "${MONGODB_LOG_PRIMARY}:/var/log/mongodb"
-#    ports:
-#      - "${MONGODB_PRIMARY_PORT}:27017"
-#    networks:
-#      - rat-race
-#    environment:
-#      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER}
-#      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
-#      TZ: ${TZ}
+  mongodb-primary:
+    image: ${MONGODB_IMG}
+    container_name: rat-race-mongodb
+    restart: always
+    volumes:
+      - "${MONGODB_CONF}:/usr/local/etc"
+      - "${MONGODB_DATA_PRIMARY}:/data/db"
+      - "${MONGODB_LOG_PRIMARY}:/var/log/mongodb"
+    ports:
+      - "${MONGODB_PRIMARY_PORT}:27017"
+    networks:
+      - rat-race
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+      TZ: ${TZ}
 #
 #  mariadb:
 #    image: ${MARIADB_IMG}
