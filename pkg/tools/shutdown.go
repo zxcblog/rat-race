@@ -12,11 +12,16 @@ type ShutDowner interface {
 	WithSignals(signals ...syscall.Signal) ShutDowner
 
 	// Close 注册关闭服务
-	Close(funcs ...func())
+	Close()
+
+	// Register 注册需要进行关闭的服务信息
+	Register(funcs ...func())
 }
 
 type ShutDown struct {
 	ctx chan os.Signal
+
+	funcs []func()
 }
 
 // NewShutDown 创建服务, 默认监听SIGINT和SIGTERM
@@ -35,11 +40,15 @@ func (s *ShutDown) WithSignals(signals ...syscall.Signal) ShutDowner {
 	return s
 }
 
-func (s *ShutDown) Close(funcs ...func()) {
+func (s *ShutDown) Register(funcs ...func()) {
+	s.funcs = append(s.funcs, funcs...)
+}
+
+func (s *ShutDown) Close() {
 	<-s.ctx
 	signal.Stop(s.ctx)
 
-	for _, f := range funcs {
+	for _, f := range s.funcs {
 		f()
 	}
 }

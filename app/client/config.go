@@ -10,7 +10,7 @@ type Conf struct {
 	// 服务
 	Server struct {
 		Name        string
-		RunMode     string
+		LogLevel    string
 		GrpcConf    mgrpc.GrpcConf
 		GatewayConf mgateway.GatewayConf
 	}

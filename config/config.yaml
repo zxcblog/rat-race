@@ -1,6 +1,6 @@
 Server:
   Name: rat-race
-  RunMode: debug
+  LogLevel: debug
   GrpcConf:
     Port: :9090
   GatewayConf:
@@ -11,6 +11,8 @@ Etcd:
     - 127.0.0.1:32179
     - 127.0.0.1:32279
     - 127.0.0.1:32379
+  Username: root
+  Password: 123456
   DialTimeOut: 5
 
 Log:
@@ -20,7 +22,6 @@ Log:
   MaxBackus: 300
   Compress: false
   LocalTime: false
-  FileLevel: error
   Console: true
 
 #Service:

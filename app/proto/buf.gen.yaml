@@ -22,7 +22,7 @@ plugins:
 
   # 生成swagger文件
   - name: openapiv2
-    out: ../swagger
+    out: ../router/swagger
     strategy: all
     opt:
       - allow_merge=true,merge_file_name=info # 将不同文件夹下的swagger整合生成到同一个文件中,文件名称为 openapi

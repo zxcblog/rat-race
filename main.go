@@ -11,4 +11,5 @@ func main() {
 	}
 
 	router.GrpcRouter()
+	client.Shutdown.Close()
 }

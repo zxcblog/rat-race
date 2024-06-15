@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package user.v1;
 
-option go_package = "github.com/zxcblog/rat-race/admin/internal/router/pb/user;user";
+option go_package = "github.com/zxcblog/rat-race/app/pb/user;user";
 
 import "google/api/annotations.proto";
 import "validate/validate.proto";

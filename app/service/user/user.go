@@ -2,7 +2,7 @@ package user
 
 import (
 	"context"
-	"github.com/zxcblog/rat-race/admin/internal/router/pb/user"
+	"github.com/zxcblog/rat-race/app/pb/user"
 )
 
 type UserServer struct {
