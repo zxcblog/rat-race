@@ -65,6 +65,7 @@ func (m *MEtcd) RegisterLease(key, val string) error {
 	return nil
 }
 
+// CloseLease 关闭租约
 func (m *MEtcd) CloseLease(key string) error {
 	lease, ok := m.LeasesMap[key]
 	if !ok {
@@ -76,4 +77,9 @@ func (m *MEtcd) CloseLease(key string) error {
 	}
 	delete(m.LeasesMap, key)
 	return nil
+}
+
+// GetClient 获取etcd操作实例
+func (m *MEtcd) GetClient() *clientv3.Client {
+	return m.cli
 }

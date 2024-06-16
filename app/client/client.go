@@ -14,6 +14,8 @@ var (
 	Etcd   *metcd.MEtcd
 	Config = new(Conf)
 
+	RatRaceMicro ratRaceMicro
+
 	Shutdown tools.ShutDowner
 )
 
@@ -23,6 +25,10 @@ func Init(filename string) error {
 	if err != nil {
 		return err
 	}
+
+	// 设置grpc和gateway启动时的服务名和监听的IP地址信息
+	Config.Server.GrpcConf.Host = tools.GetSelfIP()
+	Config.Server.GrpcConf.ServerName = Config.Server.Name
 
 	// 日志初始化
 	{
@@ -54,6 +60,8 @@ func Init(filename string) error {
 	if err != nil {
 		return err
 	}
+
+	RatRaceMicro = newRatRaceMicro()
 
 	// 全局关闭句柄
 	Shutdown = tools.NewShutDown()
