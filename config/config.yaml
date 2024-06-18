@@ -24,28 +24,15 @@ Log:
   LocalTime: false
   Console: true
 
-#Service:
-#  Host: 0.0.0.0
-#  RunMode: dev
-#  Name: rat-race
-#
-#Grpc:
-#  Port: 8082
-#  TransDataSize: 10
-#  TransDataUnit: GB
-#
-#Gateway:
-#  Port: 8080
-#
-#Mariadb:
-#  Host: 127.0.0.1
-#  Port: 3306
-#  User: root
-#  Pass: 123456
-#  DbName: rat-race
-#  MaxOpenConn: 30
-#  MaxIdleConn: 10
-#  ConnMaxLifeTime: 60
+Mariadb:
+  Host: 127.0.0.1
+  Port: 3306
+  User: root
+  Pass: 123456
+  DbName: rat-race
+  MaxOpenConn: 30
+  MaxIdleConn: 10
+  ConnMaxLifeTime: 60
 #
 #Logger:
 #  MaxSize: 150

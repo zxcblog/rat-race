@@ -4,6 +4,7 @@ import (
 	"github.com/zxcblog/rat-race/pkg/metcd"
 	"github.com/zxcblog/rat-race/pkg/mgateway"
 	"github.com/zxcblog/rat-race/pkg/mgrpc"
+	"time"
 )
 
 type Conf struct {
@@ -27,5 +28,15 @@ type Conf struct {
 		Filename     string
 		FileLevel    string
 		ConsoleLevel string
+	}
+	MariaDB struct {
+		Host            string
+		Port            string
+		User            string
+		Pass            string
+		DbName          string
+		MaxOpenConn     int
+		ConnMaxLifeTime time.Duration
+		MaxIdleConn     int
 	}
 }

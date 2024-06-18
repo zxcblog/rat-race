@@ -7,12 +7,14 @@ import (
 	"github.com/zxcblog/rat-race/pkg/metcd"
 	"github.com/zxcblog/rat-race/pkg/tools"
 	"go.uber.org/zap/zapcore"
+	"gorm.io/gorm"
 )
 
 var (
-	Logger logger.ILogger
-	Etcd   *metcd.MEtcd
-	Config = new(Conf)
+	Logger  logger.ILogger
+	Etcd    *metcd.MEtcd
+	Config  = new(Conf)
+	Mariadb *gorm.DB
 
 	RatRaceMicro ratRaceMicro
 
@@ -61,7 +63,11 @@ func Init(filename string) error {
 		return err
 	}
 
+	// 微服务客户端初始化
 	RatRaceMicro = newRatRaceMicro()
+
+	// gorm.DB 初始化
+	Mariadb = MariadbInit()
 
 	// 全局关闭句柄
 	Shutdown = tools.NewShutDown()

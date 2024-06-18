@@ -46,4 +46,4 @@ go.sum
 /web_admin/yarn.lock
 
 /compose/data/
-/docker_compose/data/*
+/docker_compose/data/*/data/*

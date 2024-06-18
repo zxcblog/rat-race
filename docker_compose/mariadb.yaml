@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  mariadb:
+    image: ${MARIADB_IMG}
+    container_name: rat-race-mariadb
+    restart: always
+    ports:
+      - "${MARIADB_PORT}:3306"
+    volumes:
+      - "${MARIADB_CONF}:/etc/mysql/conf.d/mysql.cnf"
+      - "${MARIADB_DATA}:/var/lib/mysql"
+    networks:
+      - rat-race
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MYSQL_DATABASE: "rat-race" # 初始化时创建数据库
+      TZ: ${TZ}
+
+networks:
+  rat-race:
+    driver: bridge
+    name: rat-race
