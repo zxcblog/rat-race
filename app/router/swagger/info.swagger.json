@@ -134,7 +134,8 @@
           "format": "int64",
           "title": "认证过期时间"
         }
-      }
+      },
+      "title": "token 信息"
     },
     "v1LoginReq": {
       "type": "object",
@@ -159,7 +160,8 @@
           "type": "string",
           "title": "验证码id"
         }
-      }
+      },
+      "title": "登录请求"
     },
     "v1LoginType": {
       "type": "string",
@@ -168,18 +170,19 @@
         "Mobile_Login"
       ],
       "default": "Detault_Login",
-      "title": "- Detault_Login: 账号密码登录\n - Mobile_Login: 手机验证码登录"
+      "description": "- Detault_Login: 邮箱密码登录\n - Mobile_Login: 手机验证码登录",
+      "title": "登录类型"
     },
     "v1RegisterReq": {
       "type": "object",
       "properties": {
-        "account": {
+        "username": {
           "type": "string",
-          "title": "账户"
+          "title": "用户名"
         },
-        "nickname": {
+        "email": {
           "type": "string",
-          "title": "昵称"
+          "title": "邮箱"
         },
         "password": {
           "type": "string",
@@ -189,48 +192,22 @@
           "type": "string",
           "title": "确认密码"
         },
-        "mobile": {
-          "type": "string",
-          "title": "手机号"
-        },
-        "mobileCache": {
-          "type": "string",
-          "title": "手机验证码"
-        },
         "imgCache": {
           "type": "string",
           "title": "图形验证码"
         }
-      }
+      },
+      "title": "注册请求"
     },
     "v1UserAuthRes": {
       "type": "object",
       "properties": {
-        "userinfo": {
-          "$ref": "#/definitions/v1UserInfo",
-          "title": "用户登录信息"
-        },
         "tokenInfo": {
           "$ref": "#/definitions/v1Auth",
           "title": "token认证信息"
         }
-      }
-    },
-    "v1UserInfo": {
-      "type": "object",
-      "properties": {
-        "account": {
-          "type": "string",
-          "title": "用户账号"
-        },
-        "nickname": {
-          "type": "string",
-          "title": "用户昵称"
-        },
-        "mobile": {
-          "type": "string"
-        }
-      }
+      },
+      "title": "登录注册返回信息"
     }
   }
 }
