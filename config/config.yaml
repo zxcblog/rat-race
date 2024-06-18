@@ -4,7 +4,7 @@ Server:
   GrpcConf:
     Port: 9090
   GatewayConf:
-    Port: 8080
+    Port: :8080
 
 Etcd:
   Endpoints:
@@ -44,18 +44,18 @@ Mariadb:
 #  FileName: ./logs/error.log
 #  Level: info
 #
-#Redis:
-#  Host: 127.0.0.1
-#  Port: 6379
-#  Pass: 123456 # requirepass
-#  Db: 0
-#  MinIdleConns: 5 # 最小空闲连接数
-#  PoolSize: 10 # 连接池个数
-#
-#Captcha:
-#  Type: math # audio 音频, string 字符串 + 数字, math 算术运算
-#  Height: 50
-#  Width: 100
-#  NoiseCount: 0
-#  Length: 4
-#  ExpireTime: 10
+Redis:
+  Host: 127.0.0.1
+  Port: 6379
+  Pass: 123456 # requirepass
+  Db: 0
+  MinIdleConns: 5 # 最小空闲连接数
+  PoolSize: 10 # 连接池个数
+
+Captcha:
+  Type: math # audio 音频, string 字符串 + 数字, math 算术运算
+  Height: 50
+  Width: 100
+  NoiseCount: 0
+  Length: 4
+  ExpireTime: 10

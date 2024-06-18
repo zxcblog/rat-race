@@ -1,6 +1,7 @@
 package client
 
 import (
+	"github.com/zxcblog/rat-race/pkg/captcha"
 	"github.com/zxcblog/rat-race/pkg/metcd"
 	"github.com/zxcblog/rat-race/pkg/mgateway"
 	"github.com/zxcblog/rat-race/pkg/mgrpc"
@@ -39,4 +40,15 @@ type Conf struct {
 		ConnMaxLifeTime time.Duration
 		MaxIdleConn     int
 	}
+
+	Redis struct {
+		Host         string
+		Port         string
+		Pass         string
+		Db           int
+		MinIdleConns int
+		PoolSize     int
+	}
+
+	Captcha captcha.Config
 }

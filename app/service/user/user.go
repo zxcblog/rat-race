@@ -22,13 +22,15 @@ func (u *UserServer) Login(ctx context.Context, req *user.LoginReq) (*user.UserA
 	//	return nil, err
 	//}
 
-	//TODO implement me
-	return &user.UserAuthRes{
-		Userinfo: &user.UserInfo{
-			Account:  req.Account,
-			Nickname: "",
-			Mobile:   "",
-		},
-		TokenInfo: nil,
-	}, nil
+	////TODO implement me
+	//return &user.UserAuthRes{
+	//	Userinfo: &user.UserInfo{
+	//		Account:  req.Account,
+	//		Nickname: "",
+	//		Mobile:   "",
+	//	},
+	//	TokenInfo: nil,
+	//}, nil
+
+	return nil, nil
 }

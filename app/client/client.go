@@ -2,23 +2,29 @@ package client
 
 import (
 	"errors"
+	"github.com/mojocn/base64Captcha"
+	"github.com/redis/go-redis/v9"
 	"github.com/spf13/viper"
+	"github.com/zxcblog/rat-race/pkg/captcha"
 	"github.com/zxcblog/rat-race/pkg/logger"
 	"github.com/zxcblog/rat-race/pkg/metcd"
 	"github.com/zxcblog/rat-race/pkg/tools"
 	"go.uber.org/zap/zapcore"
 	"gorm.io/gorm"
+	"time"
 )
 
 var (
 	Logger  logger.ILogger
 	Etcd    *metcd.MEtcd
 	Config  = new(Conf)
-	Mariadb *gorm.DB
+	MariaDB *gorm.DB
+	RedisDB *redis.Client
 
 	RatRaceMicro ratRaceMicro
 
 	Shutdown tools.ShutDowner
+	Captcha  *base64Captcha.Captcha
 )
 
 // Init 系统初始化方法,获取配置信息，初始化全局实例，
@@ -67,11 +73,18 @@ func Init(filename string) error {
 	RatRaceMicro = newRatRaceMicro()
 
 	// gorm.DB 初始化
-	Mariadb = MariadbInit()
+	MariaDB = MariadbInit()
+	RedisDB = RedisInit()
 
 	// 全局关闭句柄
 	Shutdown = tools.NewShutDown()
 
+	// 验证码配置
+	Captcha, err = captcha.NewCaptcha(Config.Captcha, captcha.NewRedisStore(RedisDB, time.Duration(Config.Captcha.ExpireTime)*time.Minute, CaptchaRedisKey))
+	if err != nil {
+		Logger.ErrorF("验证码启动失败：%s", err.Error())
+		return err
+	}
 	return nil
 }
 
