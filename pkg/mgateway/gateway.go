@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/zxcblog/rat-race/framework/logger"
+	"github.com/zxcblog/rat-race/pkg/mgateway/handler"
 	"net/http"
 )
 
@@ -28,7 +29,10 @@ type Gateway struct {
 
 // New 启动gateway服务
 func New(config GatewayConf, log logger.ILogger) *Gateway {
-	mux := runtime.NewServeMux()
+	mux := runtime.NewServeMux(
+		runtime.WithErrorHandler(handler.ErrHandler),
+	)
+	//https://github.com/janrs-io/Jgrpc-response
 
 	gateway := &Gateway{
 		RouterGroup: RouterGroup{
@@ -62,17 +66,6 @@ func (g *Gateway) Close(ctx context.Context) error {
 	return g.server.Shutdown(ctx)
 }
 
-//// WithGrpcCfgConnOpt 增加构建选项，读取config中gw_port的端口配置请求grpc
-//// 和WithGrpcConnOpt的区别是不用手动拨号，直接获取conn完成连接，
-//// 其他拨号形式请使用ConnOpt, 并搭配上有效的Conn
-//func WithGrpcCfgConnOpt(ctx context.Context, optFunc func(mux *runtime.ServeMux, cfgConn *grpc.ClientConn) error) GWBuildOption {
-//	return func(builder *GWBuilder) {
-//		conn, connErr := dial(ctx, "tcp", web_info.GetSvrAddr())
-//		if connErr != nil {
-//			panic(connErr)
-//		}
-//		if err := optFunc(builder.mux, conn); err != nil {
-//			log.GetLogger().ErrorF(context.Background(), "gRPC-Gateway注册Grpc连接发现错误[WithCfgConn], error: %s", err.Error())
-//		}
-//	}
-//}
+func (g *Gateway) GetServerMux() *runtime.ServeMux {
+	return g.mux
+}

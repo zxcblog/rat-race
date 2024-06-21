@@ -18,7 +18,7 @@ type Config struct {
 var source = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
 
 func NewCaptcha(conf Config, store base64Captcha.Store) (*base64Captcha.Captcha, error) {
-	col := &color.RGBA{40, 30, 89, 29}
+	col := &color.RGBA{255, 255, 255, 255}
 	fontsStorage := base64Captcha.DefaultEmbeddedFonts
 	fonts := make([]string, 0)
 	showLineOption := base64Captcha.OptionShowHollowLine

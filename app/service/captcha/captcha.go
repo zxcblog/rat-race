@@ -24,5 +24,5 @@ func (c *CaptchaServer) Get(ctx *mgateway.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, mgateway.H{"id": id, "captcha": b64})
+	ctx.JSON(http.StatusOK, mgateway.H{"code": 20000, "id": id, "captcha": b64})
 }

@@ -2,8 +2,10 @@ package mgrpc
 
 import (
 	"fmt"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/zxcblog/rat-race/framework/logger"
 	"github.com/zxcblog/rat-race/pkg/metcd"
+	"github.com/zxcblog/rat-race/pkg/mgrpc/interceptor"
 	"google.golang.org/grpc"
 	"net"
 	"strings"
@@ -29,7 +31,9 @@ type Grpc struct {
 }
 
 func New(conf GrpcConf, log logger.ILogger, etcd *metcd.MEtcd) *Grpc {
-	server := grpc.NewServer()
+	server := grpc.NewServer(grpc.ChainUnaryInterceptor(
+		grpc_recovery.UnaryServerInterceptor(interceptor.RecoveryInterceptor(log)), // panic 保护
+	))
 	lis, err := net.Listen("tcp", conf.Addr())
 	if err != nil {
 		panic(fmt.Sprintf("grpc启动监听端口失败：%s", err.Error()))

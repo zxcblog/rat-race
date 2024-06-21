@@ -21,6 +21,7 @@ services:
       ETCD_INITIAL_CLUSTER_TOKEN: "etcd-cluster"              # 设置该值后， 集群将生成唯一ID，并为每个节点生成唯一ID
       ETCD_INITIAL_CLUSTER_STATE: "new"                       # 新建集群的标志
       ETCD_ROOT_PASSWORD: ${ETCD_ROOT_PASSWORD}
+      ETCD_ACTIVE_ENDPOINTS: "http://0.0.0.0:2380" # 显式指定ETCD_ACTIVE_ENDPOINTS环境变量为集群中可用的peer_endpoint即可。
     depends_on:
       - etcd2
       - etcd3
