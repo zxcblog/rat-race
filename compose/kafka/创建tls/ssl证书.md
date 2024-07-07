@@ -1,1 +1,0 @@
-openssl req -new -x509 -keyout truststore/ca-key -out truststore/ca-key -days 3650

@@ -1,0 +1,43 @@
+version: "3.9"
+services:
+  # https://blog.renzicu.com/2023/06/226.html
+  kafka-primary:
+    image: ${KAFKA_IMG}
+    container_name: kafka-primary
+    hostname: kafka-primary
+    ports:
+      - "${KAFKA_PRIMARY_PORT}:9092"
+    volumes:
+      - "${KAFKA_PRIMARY_DATA}:/bitnami/kafka"
+      - "${KAFKA_PRIMARY_LOG}:/tmp/log"
+    environment:
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-primary:9093
+      - KAFKA_KRAFT_CLUSTER_ID=abcdefghijklmnopqrstuv
+      # Listeners
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+
+    networks:
+      - rat-race
+
+  kafka-ui:
+    image: ${KAFKA_UI_IMG}
+    container_name: kafka-ui
+    ports:
+      - "${KAFKA_UI_PORT}:8080"
+    volumes:
+      - "${KAFKA_UI_CONF}:/config.yaml"
+    environment:
+      SPRING_CONFIG_ADDITIONAL-LOCATION: "/config.yaml"
+    networks:
+      - rat-race
+
+networks:
+  rat-race:
+    driver: bridge
+    name: rat-race

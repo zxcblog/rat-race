@@ -1,0 +1,16 @@
+kafka:
+  clusters:
+    -
+      name: local # 集群名称
+      bootstrapServers: confluent-kafka:9092 # 连接位置
+#      bootstrapServers: kafka-primary:9092,kafka-node1:9092,kafka-node2:9092 # 连接位置
+#      schemaRegistry: http://localhost:8085 # schmeaRegistry的地址
+#      schemaRegistryAuth:
+#        username: username  # 基本身份验证用户名
+#        password: password  # 基本身份验证密码
+#      #     schemaNameTemplate: "%s-value" # 将密钥如何保存导 schema registry
+#      metrics:
+#        port: 9997 # 打开代理JMX端口
+#        type: JMX # 指标类型 JMX 或 PROMETHEUS 默认 JMX
+    - name: primary # 集群名称
+      bootstrapServers: kafka-primary:9092 
