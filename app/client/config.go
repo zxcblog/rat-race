@@ -4,16 +4,19 @@ import (
 	"github.com/zxcblog/rat-race/pkg/captcha"
 	"github.com/zxcblog/rat-race/pkg/metcd"
 	"github.com/zxcblog/rat-race/pkg/mgateway"
-	"github.com/zxcblog/rat-race/pkg/mgrpc"
 	"time"
 )
 
 type Conf struct {
 	// 服务
 	Server struct {
-		Name        string
-		LogLevel    string
-		GrpcConf    mgrpc.GrpcConf
+		Name     string
+		LogLevel string
+		GrpcConf struct {
+			Port       string
+			Host       string
+			ServerName string
+		}
 		GatewayConf mgateway.GatewayConf
 	}
 	//etcd配置信息

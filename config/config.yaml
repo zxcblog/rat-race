@@ -2,7 +2,7 @@ Server:
   Name: rat-race
   LogLevel: debug
   GrpcConf:
-    Port: 9090
+    Port: :9090
   GatewayConf:
     Port: :8080
 

@@ -21,8 +21,6 @@ var (
 	MariaDB *gorm.DB
 	RedisDB *redis.Client
 
-	RatRaceMicro ratRaceMicro
-
 	Shutdown tools.ShutDowner
 	Captcha  *base64Captcha.Captcha
 )
@@ -68,9 +66,6 @@ func Init(filename string) error {
 	if err != nil {
 		return err
 	}
-
-	// 微服务客户端初始化
-	RatRaceMicro = newRatRaceMicro()
 
 	// gorm.DB 初始化
 	MariaDB = MariadbInit()

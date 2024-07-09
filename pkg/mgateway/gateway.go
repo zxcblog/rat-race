@@ -36,10 +36,10 @@ func New(config GatewayConf, log logger.ILogger) *Gateway {
 		//runtime.WithIncomingHeaderMatcher(gwHeaderHandler),
 		//
 
-		runtime.WithErrorHandler(ErrHandler), // 统一错误处理
+		//runtime.WithErrorHandler(ErrHandler), // 统一错误处理
 
 		// 此处只能用来追加Header信息， 不能覆盖返回结构体, 可以通过将返回抛到错误信息中进行返回
-		runtime.WithForwardResponseOption(ResponseHandler),
+		//runtime.WithForwardResponseOption(ResponseHandler),
 
 		// 处理响应JSON问题
 		runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{

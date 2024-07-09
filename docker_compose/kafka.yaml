@@ -5,6 +5,7 @@ services:
     image: ${KAFKA_IMG}
     container_name: kafka-primary
     hostname: kafka-primary
+    restart: always
     ports:
       - "${KAFKA_PRIMARY_PORT}:9092"
     volumes:
@@ -28,6 +29,7 @@ services:
   kafka-ui:
     image: ${KAFKA_UI_IMG}
     container_name: kafka-ui
+    restart: always
     ports:
       - "${KAFKA_UI_PORT}:8080"
     volumes:

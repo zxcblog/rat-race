@@ -5,6 +5,7 @@ services:
     image: ${ETCD_IMG}
     container_name: etcd1
     hostname: etcd1
+    restart: always
     ports:
       - "${ETCD1_PORT}:2379"
       - "${ETCD1_80_PORT}:2380"
@@ -29,6 +30,7 @@ services:
     image: ${ETCD_IMG}
     container_name: etcd2
     hostname: etcd2
+    restart: always
     ports:
       - "${ETCD2_PORT}:2379"
       - "${ETCD2_80_PORT}:2380"
@@ -51,6 +53,7 @@ services:
     image: ${ETCD_IMG}
     container_name: etcd3
     hostname: etcd3
+    restart: always
     ports:
       - "${ETCD3_PORT}:2379"
       - "${ETCD3_80_PORT}:2380"
