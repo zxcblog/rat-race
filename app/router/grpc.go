@@ -8,6 +8,7 @@ import (
 	"github.com/zxcblog/rat-race/app/router/middleware"
 	user2 "github.com/zxcblog/rat-race/app/service/user"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"net"
 	"strings"
 )
@@ -31,6 +32,7 @@ func GrpcRouter() {
 	user.RegisterUserServer(server, user2.NewUserServer())
 
 	// 打印注册的服务信息，并注册到etcd中
+	reflection.Register(server)
 	serverInfo := server.GetServiceInfo()
 	pkgs := make([]string, 0, len(serverInfo))
 	for pkg := range serverInfo {
@@ -38,10 +40,7 @@ func GrpcRouter() {
 	}
 	client.Logger.DebugF("%-6s :%-25s", "成功注册服务", strings.Join(pkgs, ","))
 
-	//// 获取当前ip，端口号，将实现的服务注册到etcd中
-	//if err := g.register(pkgs); err != nil {
-	//	panic(fmt.Sprintf("grpc服务注册etcd失败：%s", err.Error()))
-	//}
+	grpcproxy.Re
 
 	// 启动grpc服务
 	go func() {
